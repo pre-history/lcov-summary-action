@@ -1,0 +1,16 @@
+name: 'LCOV Summary Reporter'
+description: 'Summarize LCOV coverage reports'
+inputs:
+  github-token:
+    description: Github token
+    required: true
+    default: ${{ github.token }}
+  title:
+    description: Summary title
+    required: false
+  lcov-file:
+    description: Path to LCOV file
+    required: false
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
