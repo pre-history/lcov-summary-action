@@ -2,7 +2,7 @@
   "name": "@pre-history/lcov-summary-action",
   "version": "0.0.1",
   "description": "",
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
     "build": "ts-node-esm esbuild.config.ts",
