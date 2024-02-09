@@ -11,6 +11,10 @@ inputs:
   lcov-file:
     description: Path to LCOV file
     required: false
+  working-directory:
+    description: Set working directory if project is not in root folder
+    required: false
+    default: './'
 runs:
   using: 'node20'
   main: 'dist/index.js'
