@@ -14,7 +14,7 @@ describe('summary diagram generator', () => {
     title Project Coverage
     "Covered" : ${covered}
     "Not covered" : ${not_covered}
-    \`\`\``;
+\`\`\``;
     assert.equal(generateSummary(covered, not_covered), expected);
   });
 
@@ -30,7 +30,7 @@ describe('summary diagram generator', () => {
     title ${title}
     "Covered" : ${covered}
     "Not covered" : ${not_covered}
-    \`\`\``;
+\`\`\``;
     assert.equal(
       generateSummary(covered, not_covered, {
         secondary_color,
