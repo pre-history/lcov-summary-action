@@ -115,7 +115,7 @@ export function getInputBoolValue(inputName: string): boolean {
  * @returns {string} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
  */
 export function readFileSafe(filepath: string) {
-  return fs.readFileSync(filepath, "utf8");
+  return fs.readFileSync(filepath, 'utf8');
 }
 
 /**
