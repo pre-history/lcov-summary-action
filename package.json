@@ -5,7 +5,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ts-node-esm esbuild.config.ts",
+    "build": "ts-node esbuild.config.ts",
     "test": "node --import tsx --test test/*.test.ts",
     "coverage": "nyc npm run test",
     "prettier": "prettier --write .",
