@@ -46,7 +46,10 @@ jobs:
         run: pnpm prettier:check
 
       - name: Test
-        run: pnpm test
+        run: pnpm coverage
+
+      - name: Lcov Summary
+        uses: pre-history/lcov-summary-action@master
 
       - name: Build
         run: pnpm build
