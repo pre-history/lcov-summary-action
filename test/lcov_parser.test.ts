@@ -8,14 +8,14 @@ describe('coverage percentage', () => {
     const fixture = fs.readFileSync('test/fixtures/0lcov.info.sample', 'utf8');
 
     // ## This should return 0% coverage
-    assert.equal(parseLcov(fixture), 0);
+    assert.equal(parseLcov(fixture).percentage, 0);
   });
 
   it('should return the 50%', () => {
     const fixture = fs.readFileSync('test/fixtures/50lcov.info.sample', 'utf8');
 
     // ## This should return 50% coverage
-    assert.equal(parseLcov(fixture), 50);
+    assert.equal(parseLcov(fixture).percentage, 50);
   });
 
   it('should return the 100%', () => {
@@ -25,6 +25,6 @@ describe('coverage percentage', () => {
     );
 
     // ## This should return 100% coverage
-    assert.equal(parseLcov(fixture), 100);
+    assert.equal(parseLcov(fixture).percentage, 100);
   });
 });
