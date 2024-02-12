@@ -22931,7 +22931,8 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
-  const summary = generateSummary(result.covered, result.not_covered);
+  const summary2 = generateSummary(result.covered, result.not_covered);
+  await core.summary.addRaw(summary2).write();
   let baseRawCoverageReport = "";
   if (inputs.baseFile) {
     baseRawCoverageReport = readFileSafe(inputs.baseFile);
