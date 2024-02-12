@@ -72,8 +72,6 @@ export function getInputs() {
     lcovFile: lcovFile,
     baseFile: baseFile,
     title: getInputValue('title'),
-    shouldFilterChangedFiles: getInputBoolValue('filter-changed-files'),
-    shouldDeleteOldComments: getInputBoolValue('delete-old-comments'),
   };
 }
 /**

@@ -22953,9 +22953,7 @@ function getInputs() {
     workingDir: WORKING_DIR,
     lcovFile,
     baseFile,
-    title: getInputValue("title"),
-    shouldFilterChangedFiles: getInputBoolValue("filter-changed-files"),
-    shouldDeleteOldComments: getInputBoolValue("delete-old-comments")
+    title: getInputValue("title")
   };
 }
 function getInputFilePath(inputName, defaultValue) {
