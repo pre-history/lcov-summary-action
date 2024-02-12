@@ -38,16 +38,17 @@ const WORKING_DIR = core.getInput('working-directory');
  */
 async function main() {
   const inputs = getInputs();
-  const rawCoverageReport = await readFileSafe(inputs.lcovFile);
+  const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
-  const result = parseLcov(rawCoverageReport);
+  const result = parseLcov(rawCoverageReport.toString());
   const summary = generateSummary(result.covered, result.not_covered);
+  await core.summary.addRaw(summary).write();
   let baseRawCoverageReport = '';
   if (inputs.baseFile) {
-    baseRawCoverageReport = await readFileSafe(inputs.baseFile);
+    baseRawCoverageReport = readFileSafe(inputs.baseFile);
     if (!baseRawCoverageReport)
       console.log(
         `No coverage report found at '${inputs.baseFile}', ignoring...`,
@@ -72,8 +73,6 @@ export function getInputs() {
     lcovFile: lcovFile,
     baseFile: baseFile,
     title: getInputValue('title'),
-    shouldFilterChangedFiles: getInputBoolValue('filter-changed-files'),
-    shouldDeleteOldComments: getInputBoolValue('delete-old-comments'),
   };
 }
 /**
@@ -114,10 +113,10 @@ export function getInputBoolValue(inputName: string): boolean {
  * Reads a file from the specified file path safely.
  *
  * @param {string} filepath - The path to the file to be read.
- * @returns {Promise<string|null>} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
+ * @returns {string} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
  */
-export async function readFileSafe(filepath: string) {
-  return await fs.readFile(filepath, 'utf-8').catch((err) => null);
+export function readFileSafe(filepath: string) {
+  return fs.readFileSync(filepath, 'utf8');
 }
 
 /**

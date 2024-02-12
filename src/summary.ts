@@ -18,5 +18,5 @@ export function generateSummary(
     title ${title}
     "Covered" : ${covered}
     "Not covered" : ${not_covered}
-    \`\`\``;
+\`\`\``;
 }

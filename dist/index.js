@@ -22917,7 +22917,7 @@ function generateSummary(covered, not_covered, options) {
     title ${title}
     "Covered" : ${covered}
     "Not covered" : ${not_covered}
-    \`\`\``;
+\`\`\``;
 }
 
 // src/index.ts
@@ -22925,17 +22925,17 @@ var REPO = github.context.payload.repository?.full_name;
 var WORKING_DIR = core.getInput("working-directory");
 async function main() {
   const inputs = getInputs();
-  const rawCoverageReport = await readFileSafe(inputs.lcovFile);
+  const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
-  const result = parseLcov(rawCoverageReport);
-  const summary = generateSummary(result.covered, result.not_covered);
-  console.log(summary);
+  const result = parseLcov(rawCoverageReport.toString());
+  const summary2 = generateSummary(result.covered, result.not_covered);
+  await core.summary.addRaw(summary2).write();
   let baseRawCoverageReport = "";
   if (inputs.baseFile) {
-    baseRawCoverageReport = await readFileSafe(inputs.baseFile);
+    baseRawCoverageReport = readFileSafe(inputs.baseFile);
     if (!baseRawCoverageReport)
       console.log(
         `No coverage report found at '${inputs.baseFile}', ignoring...`
@@ -22954,9 +22954,7 @@ function getInputs() {
     workingDir: WORKING_DIR,
     lcovFile,
     baseFile,
-    title: getInputValue("title"),
-    shouldFilterChangedFiles: getInputBoolValue("filter-changed-files"),
-    shouldDeleteOldComments: getInputBoolValue("delete-old-comments")
+    title: getInputValue("title")
   };
 }
 function getInputFilePath(inputName, defaultValue) {
@@ -22968,8 +22966,8 @@ function getInputValue(inputName) {
 function getInputBoolValue(inputName) {
   return core.getBooleanInput(inputName);
 }
-async function readFileSafe(filepath) {
-  return await fs.readFile(filepath, "utf-8").catch((err) => null);
+function readFileSafe(filepath) {
+  return fs.readFileSync(filepath, "utf8");
 }
 function getPullRequestOptions() {
   const payload = github.context.payload.pull_request;
