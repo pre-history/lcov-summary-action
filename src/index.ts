@@ -2,6 +2,8 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
+import { parseLcov } from './lcov_parser';
+import { generateSummary } from './summary';
 /**
  * Represents the options for a particular operation.
  * @interface
@@ -41,6 +43,9 @@ async function main() {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
+  const result = parseLcov(rawCoverageReport);
+  const summary = generateSummary(result.covered, result.not_covered);
+  console.log(summary);
   let baseRawCoverageReport = '';
   if (inputs.baseFile) {
     baseRawCoverageReport = await readFileSafe(inputs.baseFile);
@@ -161,3 +166,8 @@ export function getCommitDetails(inputs: any): Options {
     ...eventOptions,
   };
 }
+
+main().catch(function (err) {
+  console.log(err);
+  core.setFailed(err.message);
+});

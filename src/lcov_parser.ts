@@ -12,9 +12,9 @@ export function parseLcov(lcov: string): ParseLcov {
 
   lcovLines.forEach((line) => {
     if (line.startsWith('LH:')) {
-      linesHit = parseInt(line.split(':')[1]);
+      linesHit += parseInt(line.split(':')[1]);
     } else if (line.startsWith('LF:')) {
-      totalLines = parseInt(line.split(':')[1]);
+      totalLines += parseInt(line.split(':')[1]);
     }
   });
 

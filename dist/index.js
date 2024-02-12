@@ -18765,11 +18765,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       command_1.issue("echo", enabled ? "on" : "off");
     }
     exports2.setCommandEcho = setCommandEcho;
-    function setFailed(message) {
+    function setFailed2(message) {
       process.exitCode = ExitCode.Failure;
       error(message);
     }
-    exports2.setFailed = setFailed;
+    exports2.setFailed = setFailed2;
     function isDebug() {
       return process.env["RUNNER_DEBUG"] === "1";
     }
@@ -22882,8 +22882,67 @@ var core = __toESM(require_core());
 var github = __toESM(require_github());
 var fs = __toESM(require("fs"));
 var path = __toESM(require("path"));
+
+// src/lcov_parser.ts
+function parseLcov(lcov) {
+  const lcovLines = lcov.split("\n");
+  let linesHit = 0;
+  let totalLines = 0;
+  lcovLines.forEach((line) => {
+    if (line.startsWith("LH:")) {
+      linesHit += parseInt(line.split(":")[1]);
+    } else if (line.startsWith("LF:")) {
+      totalLines += parseInt(line.split(":")[1]);
+    }
+  });
+  let coveragePercentage = 0;
+  if (totalLines > 0) {
+    coveragePercentage = linesHit / totalLines * 100;
+  }
+  return {
+    covered: linesHit,
+    not_covered: totalLines - linesHit,
+    percentage: coveragePercentage
+  };
+}
+
+// src/summary.ts
+function generateSummary(covered, not_covered, options) {
+  const primary = options?.primary_color || "#4CAF50";
+  const secondary = options?.secondary_color || "#FF5733";
+  const title = options?.title || "Project Coverage";
+  return `\`\`\`mermaid
+  %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '${primary}', 'secondaryColor': '${secondary}'}}}%%
+    pie showData
+    title ${title}
+    "Covered" : ${covered}
+    "Not covered" : ${not_covered}
+    \`\`\``;
+}
+
+// src/index.ts
 var REPO = github.context.payload.repository?.full_name;
 var WORKING_DIR = core.getInput("working-directory");
+async function main() {
+  const inputs = getInputs();
+  const rawCoverageReport = await readFileSafe(inputs.lcovFile);
+  if (!rawCoverageReport) {
+    console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
+    return;
+  }
+  const result = parseLcov(rawCoverageReport);
+  const summary = generateSummary(result.covered, result.not_covered);
+  console.log(summary);
+  let baseRawCoverageReport = "";
+  if (inputs.baseFile) {
+    baseRawCoverageReport = await readFileSafe(inputs.baseFile);
+    if (!baseRawCoverageReport)
+      console.log(
+        `No coverage report found at '${inputs.baseFile}', ignoring...`
+      );
+  }
+  let options = getCommitDetails(inputs);
+}
 function getInputs() {
   const lcovFile = getInputFilePath(
     core.getInput("lcov-file"),
@@ -22941,6 +23000,10 @@ function getCommitDetails(inputs) {
     ...eventOptions
   };
 }
+main().catch(function(err) {
+  console.log(err);
+  core.setFailed(err.message);
+});
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   getCommitDetails,

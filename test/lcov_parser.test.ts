@@ -27,4 +27,23 @@ describe('coverage percentage', () => {
     // ## This should return 100% coverage
     assert.equal(parseLcov(fixture).percentage, 100);
   });
+
+  it('should return the 37.04%', () => {
+    const fixture = fs.readFileSync(
+      'test/fixtures/real-lcov.info.sample',
+      'utf8',
+    );
+    console.log(parseLcov(fixture).percentage);
+    // ## This should return 100% coverage
+    assert.equal(parseLcov(fixture).percentage.toFixed(2), 37.04);
+  });
+
+  it('should return the 0% when there nothing to test', () => {
+    const fixture = fs.readFileSync(
+      'test/fixtures/empty-lcov.info.sample',
+      'utf8',
+    );
+    // ## This should return 100% coverage
+    assert.equal(parseLcov(fixture).percentage, 0);
+  });
 });
