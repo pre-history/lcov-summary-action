@@ -22925,16 +22925,16 @@ var REPO = github.context.payload.repository?.full_name;
 var WORKING_DIR = core.getInput("working-directory");
 async function main() {
   const inputs = getInputs();
-  const rawCoverageReport = await readFileSafe(inputs.lcovFile);
+  const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
-  const result = parseLcov(rawCoverageReport);
+  const result = parseLcov(rawCoverageReport.toString());
   const summary = generateSummary(result.covered, result.not_covered);
   let baseRawCoverageReport = "";
   if (inputs.baseFile) {
-    baseRawCoverageReport = await readFileSafe(inputs.baseFile);
+    baseRawCoverageReport = readFileSafe(inputs.baseFile);
     if (!baseRawCoverageReport)
       console.log(
         `No coverage report found at '${inputs.baseFile}', ignoring...`
@@ -22965,8 +22965,8 @@ function getInputValue(inputName) {
 function getInputBoolValue(inputName) {
   return core.getBooleanInput(inputName);
 }
-async function readFileSafe(filepath) {
-  return await fs.readFile(filepath, "utf-8").catch((err) => null);
+function readFileSafe(filepath) {
+  return fs.readFileSync(filepath, "utf8");
 }
 function getPullRequestOptions() {
   const payload = github.context.payload.pull_request;
