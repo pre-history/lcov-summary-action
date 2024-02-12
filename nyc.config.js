@@ -1,5 +1,5 @@
 export default {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "all": true,
-    "check-coverage": true
+  extends: '@istanbuljs/nyc-config-typescript',
+  all: true,
+  'check-coverage': true,
 };
