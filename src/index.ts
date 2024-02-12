@@ -2,6 +2,10 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
+/**
+ * Represents the options for a particular operation.
+ * @interface
+ */
 interface Options {
   repository: string;
   workingDir: string;
@@ -10,8 +14,26 @@ interface Options {
   head?: string;
   base?: string;
 }
+/**
+ * The REPO variable contains the full name of the repository from the GitHub context payload.
+ * It is extracted using optional chaining and the nullish coalescing operator to handle null or undefined values.
+ *
+ * @type {string}
+ */
 const REPO = github.context.payload.repository?.full_name!;
+/**
+ * Represents the working directory.
+ *
+ * @type {string}
+ */
 const WORKING_DIR = core.getInput('working-directory');
+/**
+ * Entry point of the program.
+ *
+ * @async
+ * @function main
+ * @returns {void}
+ */
 async function main() {
   const inputs = getInputs();
   const rawCoverageReport = await readFileSafe(inputs.lcovFile);
@@ -29,6 +51,11 @@ async function main() {
   }
   let options: Options = getCommitDetails(inputs);
 }
+/**
+ * Retrieves the inputs required for the operation.
+ *
+ * @return {Object} The input values.
+ */
 function getInputs() {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
@@ -45,22 +72,52 @@ function getInputs() {
     shouldDeleteOldComments: getInputBoolValue('delete-old-comments'),
   };
 }
+/**
+ * Returns the input file path based on the input name and default value.
+ *
+ * @param {string} inputName - The name of the input.
+ * @param {string} defaultValue - The default value to use if the input is not set.
+ * @return {string} The input file path.
+ */
 function getInputFilePath(inputName: string, defaultValue: string): string {
   return path.join(WORKING_DIR, core.getInput(inputName) || defaultValue);
 }
 
+/**
+ * Retrieves the value of the specified input.
+ *
+ * @param {string} inputName - The name of the input.
+ * @return {string} The value of the input.
+ */
 function getInputValue(inputName: string): string {
   return core.getInput(inputName);
 }
 
+/**
+ * Returns the boolean value of the specified input.
+ *
+ * @param {string} inputName - The name of the input for which to retrieve the boolean value.
+ * @return {boolean} The boolean value of the input.
+ */
 function getInputBoolValue(inputName: string): boolean {
   return core.getBooleanInput(inputName);
 }
 
+/**
+ * Reads a file from the specified file path safely.
+ *
+ * @param {string} filepath - The path to the file to be read.
+ * @returns {Promise<string|null>} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
+ */
 async function readFileSafe(filepath: string) {
   return await fs.readFile(filepath, 'utf-8').catch((err) => null);
 }
 
+/**
+ * Retrieves the pull request options for a GitHub pull request.
+ *
+ * @returns {Partial<Options>} - The pull request options.
+ */
 function getPullRequestOptions(): Partial<Options> {
   const payload = github.context.payload.pull_request!;
   return {
@@ -70,6 +127,11 @@ function getPullRequestOptions(): Partial<Options> {
     base: payload.base.ref,
   };
 }
+/**
+ * Retrieves the push options for a GitHub action workflow.
+ *
+ * @returns {Partial<Options>} The push options for the workflow.
+ */
 function getPushOptions(): Partial<Options> {
   return {
     commit: github.context.payload.after,
@@ -77,6 +139,12 @@ function getPushOptions(): Partial<Options> {
     head: github.context.ref,
   };
 }
+/**
+ * Retrieves commit details based on the input.
+ *
+ * @param {any} inputs - The inputs used to determine the commit details.
+ * @return {Options} - The commit details.
+ */
 function getCommitDetails(inputs: any): Options {
   let eventOptions: Partial<Options> = {};
   if (github.context.eventName === 'pull_request') {
