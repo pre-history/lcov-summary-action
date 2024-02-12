@@ -1,6 +1,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { getInputs, getInputFilePath, getInputValue, getInputBoolValue } from '../src/index';
+import {
+  getInputs,
+  getInputFilePath,
+  getInputValue,
+  getInputBoolValue,
+} from '../src';
 
 describe('index.ts', () => {
   describe('getInputs', () => {

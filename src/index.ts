@@ -56,7 +56,7 @@ async function main() {
  *
  * @return {Object} The input values.
  */
-function getInputs() {
+export function getInputs() {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
     './coverage/lcov.info',
@@ -79,7 +79,10 @@ function getInputs() {
  * @param {string} defaultValue - The default value to use if the input is not set.
  * @return {string} The input file path.
  */
-function getInputFilePath(inputName: string, defaultValue: string): string {
+export function getInputFilePath(
+  inputName: string,
+  defaultValue: string,
+): string {
   return path.join(WORKING_DIR, core.getInput(inputName) || defaultValue);
 }
 
@@ -89,7 +92,7 @@ function getInputFilePath(inputName: string, defaultValue: string): string {
  * @param {string} inputName - The name of the input.
  * @return {string} The value of the input.
  */
-function getInputValue(inputName: string): string {
+export function getInputValue(inputName: string): string {
   return core.getInput(inputName);
 }
 
@@ -99,7 +102,7 @@ function getInputValue(inputName: string): string {
  * @param {string} inputName - The name of the input for which to retrieve the boolean value.
  * @return {boolean} The boolean value of the input.
  */
-function getInputBoolValue(inputName: string): boolean {
+export function getInputBoolValue(inputName: string): boolean {
   return core.getBooleanInput(inputName);
 }
 
@@ -109,7 +112,7 @@ function getInputBoolValue(inputName: string): boolean {
  * @param {string} filepath - The path to the file to be read.
  * @returns {Promise<string|null>} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
  */
-async function readFileSafe(filepath: string) {
+export async function readFileSafe(filepath: string) {
   return await fs.readFile(filepath, 'utf-8').catch((err) => null);
 }
 
@@ -118,7 +121,7 @@ async function readFileSafe(filepath: string) {
  *
  * @returns {Partial<Options>} - The pull request options.
  */
-function getPullRequestOptions(): Partial<Options> {
+export function getPullRequestOptions(): Partial<Options> {
   const payload = github.context.payload.pull_request!;
   return {
     commit: payload.head.sha,
@@ -132,7 +135,7 @@ function getPullRequestOptions(): Partial<Options> {
  *
  * @returns {Partial<Options>} The push options for the workflow.
  */
-function getPushOptions(): Partial<Options> {
+export function getPushOptions(): Partial<Options> {
   return {
     commit: github.context.payload.after,
     baseCommit: github.context.payload.before,
@@ -145,7 +148,7 @@ function getPushOptions(): Partial<Options> {
  * @param {any} inputs - The inputs used to determine the commit details.
  * @return {Options} - The commit details.
  */
-function getCommitDetails(inputs: any): Options {
+export function getCommitDetails(inputs: any): Options {
   let eventOptions: Partial<Options> = {};
   if (github.context.eventName === 'pull_request') {
     eventOptions = getPullRequestOptions();

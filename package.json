@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ts-node-esm esbuild.config.ts",
-    "test": "node --import tsx --test test/lcov_parser.test.ts",
+    "test": "node --loader tsx --test test/*.test.ts",
     "coverage": "nyc npm run test",
     "prettier": "prettier --write ."
   },
