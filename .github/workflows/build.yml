@@ -49,7 +49,7 @@ jobs:
         run: pnpm coverage
 
       - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@summary
+        uses: pre-history/lcov-summary-action@master
 
       - name: Build
         run: pnpm build
