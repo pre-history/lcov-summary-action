@@ -1,8 +1,7 @@
-
 interface ParseLcov {
-    covered: number;
-    not_covered: number;
-    percentage: number;
+  covered: number;
+  not_covered: number;
+  percentage: number;
 }
 
 export function parseLcov(lcov: string): ParseLcov {

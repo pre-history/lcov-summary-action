@@ -1,0 +1,52 @@
+name: Lcov Summary Action CI
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, ready_for_review]
+
+concurrency:
+  group: ${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.4.0
+        with:
+          version: 8.15.1
+          run_install: false
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.11.0
+          registry-url: https://npm.pkg.github.com
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies 👨🏻‍💻
+        run: pnpm i --frozen-lockfile
+
+      - name: Linter
+        run: pnpm prettier:check
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
