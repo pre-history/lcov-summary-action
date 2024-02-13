@@ -65,8 +65,12 @@ jobs:
           echo "The files that are going to be pushed are:"
           git diff --name-only --cached
           git add dist
-          git commit -m "chore: build dist folder"
-          git push origin HEAD:${{ github.head_ref }}
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: build dist folder"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
 
       - name: Lcov Summary
         uses: pre-history/lcov-summary-action@comment
