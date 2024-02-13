@@ -3,7 +3,7 @@ description: 'Summarize LCOV coverage reports'
 inputs:
   github-token:
     description: Github token
-    required: false
+    required: true
     default: ${{ github.token }}
   title:
     description: Summary title

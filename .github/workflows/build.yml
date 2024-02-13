@@ -50,6 +50,8 @@ jobs:
 
       - name: Lcov Summary
         uses: pre-history/lcov-summary-action@comment
+        with:
+          github-token: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build
         run: pnpm build
