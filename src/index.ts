@@ -51,11 +51,9 @@ async function main() {
   });
   const context = github.context;
 
-  if (
-    context.payload.pull_request !== null
-  ) {
+  if (context.payload.pull_request !== null) {
     const pull_request_number = context.payload.pull_request!.number;
-    core.info(pull_request_number.toString())
+    core.info(pull_request_number.toString());
     const octokit = new github.getOctokit(inputs.githubToken);
     await octokit.issues.createComment({
       owner: context.repo.owner,

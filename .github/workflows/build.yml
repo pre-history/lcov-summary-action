@@ -42,8 +42,8 @@ jobs:
       - name: Install dependencies 👨🏻‍💻
         run: pnpm i --frozen-lockfile
 
-#      - name: Linter
-#        run: pnpm prettier:check
+      #      - name: Linter
+      #        run: pnpm prettier:check
 
       - name: Test
         run: pnpm coverage
