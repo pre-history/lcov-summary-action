@@ -79,5 +79,5 @@ jobs:
         uses: pre-history/lcov-summary-action@comment
         continue-on-error: true
         with:
-          github-token: ${{ secrets.GHCR_TOKEN }}
+          github-token: ${{ secrets.TOKEN }}
           title: 'Coverage Report'
