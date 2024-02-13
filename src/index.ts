@@ -44,16 +44,26 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
-  const summary = generateSummary(result.covered, result.not_covered);
-  await core.summary.addRaw(summary).write();
-  let baseRawCoverageReport = '';
-  if (inputs.baseFile) {
-    baseRawCoverageReport = readFileSafe(inputs.baseFile);
-    if (!baseRawCoverageReport)
-      console.log(
-        `No coverage report found at '${inputs.baseFile}', ignoring...`,
-      );
+  const summary = generateSummary(result.covered, result.not_covered, {
+    title: inputs.title,
+    primary_color: inputs.primary_color,
+    secondary_color: inputs.secondary_color,
+  });
+  const context = github.context;
+
+  if (context.payload.pull_request !== null && context.payload.action === 'opened') {
+    const pull_request_number = context.payload.pull_request!.number;
+    const octokit = new github.getOctokit(inputs.githubToken);
+    await octokit.issues.createComment({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: pull_request_number,
+      body: summary
+    });
   }
+
+  await core.summary.addRaw(summary).write();
+
   let options: Options = getCommitDetails(inputs);
 }
 /**
@@ -71,8 +81,9 @@ export function getInputs() {
     githubToken: getInputValue('github-token'),
     workingDir: WORKING_DIR,
     lcovFile: lcovFile,
-    baseFile: baseFile,
     title: getInputValue('title'),
+    primary_color: getInputValue('pie-covered-color'),
+    secondary_color: getInputValue('pie-not-covered-color'),
   };
 }
 /**
