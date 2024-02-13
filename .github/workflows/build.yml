@@ -51,15 +51,8 @@ jobs:
       - name: Test
         run: pnpm coverage
 
-      - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@master
-        continue-on-error: true
-
       - name: Build
         run: pnpm build
-
-      - name: Show current branch
-        run: echo "Current branch is ${{ github.head_ref || github.ref_name }}"
 
       - name: commit to current branch the dist folder
         run: |
@@ -74,3 +67,7 @@ jobs:
           git add dist
           git commit -m "chore: build dist folder"
           git push origin HEAD:${{ github.head_ref }}
+
+      - name: Lcov Summary
+        uses: pre-history/lcov-summary-action@${{ github.head_ref }}
+        continue-on-error: true
