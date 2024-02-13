@@ -11,10 +11,19 @@ inputs:
   lcov-file:
     description: Path to LCOV file
     required: false
+    default: './coverage/lcov.info'
   working-directory:
     description: Set working directory if project is not in root folder
     required: false
     default: './'
+  pie-covered-color:
+    description: Color for pie chart covered part
+    required: false
+    default: '#4CAF50'
+  pie-not-covered-color:
+    description: Color for pie chart not coverage part
+    required: false
+    default: '#FF5733'
 runs:
   using: 'node20'
   main: 'dist/index.js'

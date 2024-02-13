@@ -71,3 +71,6 @@ jobs:
       - name: Lcov Summary
         uses: pre-history/lcov-summary-action@${{ github.head_ref }}
         continue-on-error: true
+        with:
+          github-token: ${{ secrets.GHCR_TOKEN }}
+          title: 'Coverage Report'
