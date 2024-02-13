@@ -22857,11 +22857,11 @@ var require_github = __commonJS({
     var Context = __importStar(require_context());
     var utils_1 = require_utils4();
     exports2.context = new Context.Context();
-    function getOctokit(token, options, ...additionalPlugins) {
+    function getOctokit2(token, options, ...additionalPlugins) {
       const GitHubWithPlugins = utils_1.GitHub.plugin(...additionalPlugins);
       return new GitHubWithPlugins((0, utils_1.getOctokitOptions)(token, options));
     }
-    exports2.getOctokit = getOctokit;
+    exports2.getOctokit = getOctokit2;
   }
 });
 
@@ -22931,16 +22931,23 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
-  const summary2 = generateSummary(result.covered, result.not_covered);
-  await core.summary.addRaw(summary2).write();
-  let baseRawCoverageReport = "";
-  if (inputs.baseFile) {
-    baseRawCoverageReport = readFileSafe(inputs.baseFile);
-    if (!baseRawCoverageReport)
-      console.log(
-        `No coverage report found at '${inputs.baseFile}', ignoring...`
-      );
+  const summary2 = generateSummary(result.covered, result.not_covered, {
+    title: inputs.title,
+    primary_color: inputs.primary_color,
+    secondary_color: inputs.secondary_color
+  });
+  const context2 = github.context;
+  if (context2.payload.pull_request !== null && context2.payload.action === "opened") {
+    const pull_request_number = context2.payload.pull_request.number;
+    const octokit = new github.getOctokit(inputs.githubToken);
+    await octokit.issues.createComment({
+      owner: context2.repo.owner,
+      repo: context2.repo.repo,
+      issue_number: pull_request_number,
+      body: summary2
+    });
   }
+  await core.summary.addRaw(summary2).write();
   let options = getCommitDetails(inputs);
 }
 function getInputs() {
@@ -22953,8 +22960,9 @@ function getInputs() {
     githubToken: getInputValue("github-token"),
     workingDir: WORKING_DIR,
     lcovFile,
-    baseFile,
-    title: getInputValue("title")
+    title: getInputValue("title"),
+    primary_color: getInputValue("pie-covered-color"),
+    secondary_color: getInputValue("pie-not-covered-color")
   };
 }
 function getInputFilePath(inputName, defaultValue) {

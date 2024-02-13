@@ -51,14 +51,17 @@ async function main() {
   });
   const context = github.context;
 
-  if (context.payload.pull_request !== null && context.payload.action === 'opened') {
+  if (
+    context.payload.pull_request !== null &&
+    context.payload.action === 'opened'
+  ) {
     const pull_request_number = context.payload.pull_request!.number;
     const octokit = new github.getOctokit(inputs.githubToken);
     await octokit.issues.createComment({
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: pull_request_number,
-      body: summary
+      body: summary,
     });
   }
 
