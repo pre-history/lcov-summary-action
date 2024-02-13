@@ -69,7 +69,7 @@ jobs:
           git push origin HEAD:${{ github.head_ref }}
 
       - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@${{ github.head_ref }}
+        uses: pre-history/lcov-summary-action@${{ github.head_ref || github.ref_name }}
         continue-on-error: true
         with:
           github-token: ${{ secrets.GHCR_TOKEN }}
