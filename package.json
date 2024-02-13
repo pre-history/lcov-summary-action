@@ -1,6 +1,6 @@
 {
   "name": "@pre-history/lcov-summary-action",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "type": "commonjs",
   "main": "dist/index.js",
