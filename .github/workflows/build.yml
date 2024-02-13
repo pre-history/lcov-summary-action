@@ -51,15 +51,18 @@ jobs:
       - name: Test
         run: pnpm coverage
 
+      - name: rebase
+        run: |
+          git config pull.rebase true
+          git pull origin ${{ github.head_ref }}
+
       - name: Build
         run: pnpm build
 
       - name: commit to current branch the dist folder
         run: |
           set -e
-          git config pull.rebase true
           trap 'git add dist' ERR
-          git pull origin ${{ github.head_ref }}
           git config --global user.name github-actions[bot]
           git config --global user.email ${{github.actor_id}}+github-actions[bot]@users.noreply.github.com
           echo "The files that are going to be pushed are:"
