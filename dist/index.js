@@ -22937,7 +22937,7 @@ async function main() {
     secondary_color: inputs.secondary_color
   });
   const context2 = github.context;
-  if (context2.payload.pull_request !== null && context2.payload.action === "opened") {
+  if (context2.payload.pull_request !== null) {
     const pull_request_number = context2.payload.pull_request.number;
     const octokit = new github.getOctokit(inputs.githubToken);
     await octokit.issues.createComment({

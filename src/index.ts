@@ -52,8 +52,7 @@ async function main() {
   const context = github.context;
 
   if (
-    context.payload.pull_request !== null &&
-    context.payload.action === 'opened'
+    context.payload.pull_request !== null
   ) {
     const pull_request_number = context.payload.pull_request!.number;
     const octokit = new github.getOctokit(inputs.githubToken);
