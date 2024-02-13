@@ -22940,7 +22940,9 @@ async function main() {
   if (context2.payload.pull_request) {
     const pull_request_number = context2.payload.pull_request.number;
     core.info(pull_request_number.toString());
+    core.info(inputs.githubToken);
     const octokit = new github.getOctokit(inputs.githubToken);
+    core.info(octokit);
     await octokit.issues.createComment({
       owner: context2.repo.owner,
       repo: context2.repo.repo,
