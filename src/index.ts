@@ -64,7 +64,6 @@ async function main() {
       body: summary,
     });
   }
-
   await core.summary.addRaw(summary).write();
 }
 /**
