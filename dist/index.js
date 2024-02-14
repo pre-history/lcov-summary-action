@@ -22942,8 +22942,8 @@ async function main() {
     core.info(pull_request_number.toString());
     core.info(inputs.githubToken);
     const octokit = new github.getOctokit(inputs.githubToken);
-    core.info(octokit);
-    await octokit.issues.createComment({
+    core.info(Object.keys(octokit).toString());
+    await octokit.rest.issues.createComment({
       owner: context2.repo.owner,
       repo: context2.repo.repo,
       issue_number: pull_request_number,
