@@ -11,6 +11,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   build:
@@ -79,5 +80,5 @@ jobs:
         uses: pre-history/lcov-summary-action@comment
         continue-on-error: true
         with:
-          github-token: ${{ secrets.TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           title: 'Coverage Report'
