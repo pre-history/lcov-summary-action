@@ -33,8 +33,8 @@ describe('coverage percentage', () => {
       'test/fixtures/real-lcov.info.sample',
       'utf8',
     );
-    console.log(parseLcov(fixture).percentage);
-    // ## This should return 100% coverage
+
+    // ## This should return 37.04% coverage
     assert.equal(parseLcov(fixture).percentage.toFixed(2), 37.04);
   });
 
@@ -43,7 +43,7 @@ describe('coverage percentage', () => {
       'test/fixtures/empty-lcov.info.sample',
       'utf8',
     );
-    // ## This should return 100% coverage
+    // ## This should return 0% coverage
     assert.equal(parseLcov(fixture).percentage, 0);
   });
 });

@@ -22857,24 +22857,21 @@ var require_github = __commonJS({
     var Context = __importStar(require_context());
     var utils_1 = require_utils4();
     exports2.context = new Context.Context();
-    function getOctokit(token, options, ...additionalPlugins) {
+    function getOctokit2(token, options, ...additionalPlugins) {
       const GitHubWithPlugins = utils_1.GitHub.plugin(...additionalPlugins);
       return new GitHubWithPlugins((0, utils_1.getOctokitOptions)(token, options));
     }
-    exports2.getOctokit = getOctokit;
+    exports2.getOctokit = getOctokit2;
   }
 });
 
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  getCommitDetails: () => getCommitDetails,
   getInputBoolValue: () => getInputBoolValue,
   getInputFilePath: () => getInputFilePath,
   getInputValue: () => getInputValue,
   getInputs: () => getInputs,
-  getPullRequestOptions: () => getPullRequestOptions,
-  getPushOptions: () => getPushOptions,
   readFileSafe: () => readFileSafe
 });
 module.exports = __toCommonJS(src_exports);
@@ -22912,7 +22909,7 @@ function generateSummary(covered, not_covered, options) {
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
   return `\`\`\`mermaid
-  %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '${primary}', 'secondaryColor': '${secondary}'}}}%%
+  %%{init: {'theme': 'default', 'themeVariables': {'primaryColor': '${primary}', 'secondaryColor': '${secondary}'}}}%%
     pie showData
     title ${title}
     "Covered" : ${covered}
@@ -22921,7 +22918,6 @@ function generateSummary(covered, not_covered, options) {
 }
 
 // src/index.ts
-var REPO = github.context.payload.repository?.full_name;
 var WORKING_DIR = core.getInput("working-directory");
 async function main() {
   const inputs = getInputs();
@@ -22931,17 +22927,23 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
-  const summary2 = generateSummary(result.covered, result.not_covered);
-  await core.summary.addRaw(summary2).write();
-  let baseRawCoverageReport = "";
-  if (inputs.baseFile) {
-    baseRawCoverageReport = readFileSafe(inputs.baseFile);
-    if (!baseRawCoverageReport)
-      console.log(
-        `No coverage report found at '${inputs.baseFile}', ignoring...`
-      );
+  const summary2 = generateSummary(result.covered, result.not_covered, {
+    title: inputs.title,
+    primary_color: inputs.primary_color,
+    secondary_color: inputs.secondary_color
+  });
+  const context2 = github.context;
+  if (context2.payload.pull_request && github.context.payload.action === "opened" && inputs.commentPr) {
+    const pull_request_number = context2.payload.pull_request.number;
+    const octokit = new github.getOctokit(inputs.githubToken);
+    await octokit.rest.issues.createComment({
+      owner: context2.repo.owner,
+      repo: context2.repo.repo,
+      issue_number: pull_request_number,
+      body: summary2
+    });
   }
-  let options = getCommitDetails(inputs);
+  await core.summary.addRaw(summary2).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(
@@ -22953,8 +22955,10 @@ function getInputs() {
     githubToken: getInputValue("github-token"),
     workingDir: WORKING_DIR,
     lcovFile,
-    baseFile,
-    title: getInputValue("title")
+    commentPr: getInputBoolValue("comment-on-pr"),
+    title: getInputValue("title"),
+    primary_color: getInputValue("pie-covered-color"),
+    secondary_color: getInputValue("pie-not-covered-color")
   };
 }
 function getInputFilePath(inputName, defaultValue) {
@@ -22969,48 +22973,16 @@ function getInputBoolValue(inputName) {
 function readFileSafe(filepath) {
   return fs.readFileSync(filepath, "utf8");
 }
-function getPullRequestOptions() {
-  const payload = github.context.payload.pull_request;
-  return {
-    commit: payload.head.sha,
-    baseCommit: payload.base.sha,
-    head: payload.head.ref,
-    base: payload.base.ref
-  };
-}
-function getPushOptions() {
-  return {
-    commit: github.context.payload.after,
-    baseCommit: github.context.payload.before,
-    head: github.context.ref
-  };
-}
-function getCommitDetails(inputs) {
-  let eventOptions = {};
-  if (github.context.eventName === "pull_request") {
-    eventOptions = getPullRequestOptions();
-  } else if (github.context.eventName === "push") {
-    eventOptions = getPushOptions();
-  }
-  return {
-    repository: REPO,
-    workingDir: WORKING_DIR,
-    ...eventOptions
-  };
-}
 main().catch(function(err) {
   console.log(err);
   core.setFailed(err.message);
 });
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  getCommitDetails,
   getInputBoolValue,
   getInputFilePath,
   getInputValue,
   getInputs,
-  getPullRequestOptions,
-  getPushOptions,
   readFileSafe
 });
 /*! Bundled license information:
