@@ -11,7 +11,6 @@ concurrency:
 
 permissions:
   contents: write
-  issues: write
   pull-requests: write
 
 jobs:
@@ -78,8 +77,9 @@ jobs:
           fi
 
       - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@comment
+        uses: pre-history/lcov-summary-action@master
         continue-on-error: true
         with:
           github-token: ${{ github.token }}
           title: 'Coverage Report'
+          comment-on-pr: true

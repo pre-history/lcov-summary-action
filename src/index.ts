@@ -5,25 +5,6 @@ import * as path from 'path';
 import { parseLcov } from './lcov_parser';
 import { generateSummary } from './summary';
 /**
- * Represents the options for a particular operation.
- * @interface
- */
-interface Options {
-  repository: string;
-  workingDir: string;
-  commit?: string;
-  baseCommit?: string;
-  head?: string;
-  base?: string;
-}
-/**
- * The REPO variable contains the full name of the repository from the GitHub context payload.
- * It is extracted using optional chaining and the nullish coalescing operator to handle null or undefined values.
- *
- * @type {string}
- */
-const REPO = github.context.payload.repository?.full_name!;
-/**
  * Represents the working directory.
  *
  * @type {string}
@@ -50,13 +31,14 @@ async function main() {
     secondary_color: inputs.secondary_color,
   });
   const context = github.context;
-
-  if (context.payload.pull_request) {
+  if (
+    context.payload.pull_request &&
+    github.context.payload.action === 'opened' &&
+    inputs.commentPr
+  ) {
     const pull_request_number = context.payload.pull_request.number;
-    core.info(pull_request_number.toString());
-    core.info(inputs.githubToken);
     const octokit = new github.getOctokit(inputs.githubToken);
-    core.info(Object.keys(octokit).toString());
+
     await octokit.rest.issues.createComment({
       owner: context.repo.owner,
       repo: context.repo.repo,
@@ -81,6 +63,7 @@ export function getInputs() {
     githubToken: getInputValue('github-token'),
     workingDir: WORKING_DIR,
     lcovFile: lcovFile,
+    commentPr: getInputBoolValue('comment-on-pr'),
     title: getInputValue('title'),
     primary_color: getInputValue('pie-covered-color'),
     secondary_color: getInputValue('pie-not-covered-color'),
@@ -128,52 +111,6 @@ export function getInputBoolValue(inputName: string): boolean {
  */
 export function readFileSafe(filepath: string) {
   return fs.readFileSync(filepath, 'utf8');
-}
-
-/**
- * Retrieves the pull request options for a GitHub pull request.
- *
- * @returns {Partial<Options>} - The pull request options.
- */
-export function getPullRequestOptions(): Partial<Options> {
-  const payload = github.context.payload.pull_request!;
-  return {
-    commit: payload.head.sha,
-    baseCommit: payload.base.sha,
-    head: payload.head.ref,
-    base: payload.base.ref,
-  };
-}
-/**
- * Retrieves the push options for a GitHub action workflow.
- *
- * @returns {Partial<Options>} The push options for the workflow.
- */
-export function getPushOptions(): Partial<Options> {
-  return {
-    commit: github.context.payload.after,
-    baseCommit: github.context.payload.before,
-    head: github.context.ref,
-  };
-}
-/**
- * Retrieves commit details based on the input.
- *
- * @param {any} inputs - The inputs used to determine the commit details.
- * @return {Options} - The commit details.
- */
-export function getCommitDetails(inputs: any): Options {
-  let eventOptions: Partial<Options> = {};
-  if (github.context.eventName === 'pull_request') {
-    eventOptions = getPullRequestOptions();
-  } else if (github.context.eventName === 'push') {
-    eventOptions = getPushOptions();
-  }
-  return {
-    repository: REPO,
-    workingDir: WORKING_DIR,
-    ...eventOptions,
-  };
 }
 
 main().catch(function (err) {
