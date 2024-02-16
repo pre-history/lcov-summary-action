@@ -18,7 +18,6 @@ const index: typeof main = mock('../src', {
 });
 
 describe('index.ts', () => {
-
   it('getInputs should return the correct inputs', () => {
     assert.deepEqual(index.getInputs(), {
       githubToken: 'github-token',
