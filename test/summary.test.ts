@@ -9,7 +9,7 @@ describe('summary diagram generator', () => {
     const covered = 50;
     const not_covered = 50;
     const expected = `\`\`\`mermaid
-  %%{init: {'theme': 'default', 'themeVariables': {'primaryColor': '#4CAF50', 'secondaryColor': '#FF5733'}}}%%
+  %%{init: {'theme': 'base', 'themeVariables': {'darkMode': true, 'primaryColor': '#4CAF50', 'secondaryColor': '#FF5733'}}}%%
     pie showData
     title Project Coverage
     "Covered" : ${covered}
@@ -25,7 +25,7 @@ describe('summary diagram generator', () => {
     const secondary_color = '#ce650b';
     const title = 'Test Coverage';
     const expected = `\`\`\`mermaid
-  %%{init: {'theme': 'default', 'themeVariables': {'primaryColor': '${primary_color}', 'secondaryColor': '${secondary_color}'}}}%%
+  %%{init: {'theme': 'base', 'themeVariables': {'darkMode': true, 'primaryColor': '${primary_color}', 'secondaryColor': '${secondary_color}'}}}%%
     pie showData
     title ${title}
     "Covered" : ${covered}
