@@ -1,29 +1,47 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert';
-import { getInputBoolValue, getInputFilePath, getInputValue } from '../src';
+import { mock } from 'cjs-mock';
+import * as core from '@actions/core';
+import * as fs from 'fs';
+import * as main from '../src';
+
+const index: typeof main = mock('../src', {
+  '@actions/core': {
+    ...core,
+    getInput: (name: string) => name,
+    getBooleanInput: (name: string) => true,
+  },
+  fs: {
+    ...fs,
+    readFileSync: (path: string) => 'test',
+  },
+});
 
 describe('index.ts', () => {
-  describe('getInputs', () => {
-    it('should return the correct inputs', () => {
-      // Write your tests for getInputs here
+  it('getInputs should return the correct inputs', () => {
+    assert.deepEqual(index.getInputs(), {
+      githubToken: 'github-token',
+      workingDir: 'working-directory',
+      lcovFile: 'working-directory/lcov-file',
+      commentPr: true,
+      title: 'title',
+      primary_color: 'pie-covered-color',
+      secondary_color: 'pie-not-covered-color',
     });
   });
 
-  describe('getInputFilePath', () => {
-    it('should return the correct file path', () => {
-      // Write your tests for getInputFilePath here
-    });
+  it('getInputFilePath should return the correct file path', () => {
+    assert.equal(
+      index.getInputFilePath('test', 'nothing-found'),
+      'working-directory/test',
+    );
   });
 
-  describe('getInputValue', () => {
-    it('should return the correct input value', () => {
-      // Write your tests for getInputValue here
-    });
+  it('getInputValue should return the correct input value', () => {
+    assert.equal(index.getInputValue('test'), 'test');
   });
 
-  describe('getInputBoolValue', () => {
-    it('should return the correct boolean value', () => {
-      // Write your tests for getInputBoolValue here
-    });
+  it('getInputBoolValue should return the correct boolean value', () => {
+    assert.equal(index.getInputBoolValue('test'), true);
   });
 });

@@ -113,7 +113,10 @@ export function readFileSafe(filepath: string) {
   return fs.readFileSync(filepath, 'utf8');
 }
 
-main().catch(function (err) {
-  console.log(err);
-  core.setFailed(err.message);
-});
+if (require.main === module) {
+  // Code to be executed only when the script is run directly
+  main().catch(function (err) {
+    console.log(err);
+    core.setFailed(err.message);
+  });
+}
