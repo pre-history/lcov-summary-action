@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.1.0...lcov-summary-action-v0.2.0) (2024-02-16)
+
+
+### Features
+
+* Add Coverage Graph to Pull Request ([#13](https://github.com/pre-history/lcov-summary-action/issues/13)) ([ececfe8](https://github.com/pre-history/lcov-summary-action/commit/ececfe82fd843f92df001b23a2d196fa5f625e06))
+* edit mermaid ([#17](https://github.com/pre-history/lcov-summary-action/issues/17)) ([41637a7](https://github.com/pre-history/lcov-summary-action/commit/41637a76845e64f03b57822ecb2787ed9db0c249))
+* **test:** add tests ([#15](https://github.com/pre-history/lcov-summary-action/issues/15)) ([493123e](https://github.com/pre-history/lcov-summary-action/commit/493123e58a11ffc91deb280387df360e04df2c5a))
+
+
+### Bug Fixes
+
+* generate the dist in ci ([83411ee](https://github.com/pre-history/lcov-summary-action/commit/83411eea338cd8102710130ef95661a0e5c3e94d))
+
 ## [0.1.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.0.1...lcov-summary-action-v0.1.0) (2024-02-12)
 
 
