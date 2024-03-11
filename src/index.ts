@@ -48,19 +48,20 @@ async function main() {
     });
   }
   await core.summary
-      .addRaw(summary)
-      .addBreak()
-      .addHeading('Test Results')
-      .addTable([
-        [
-          { data: 'File', header: true },
-          { data: 'Result', header: true },
-        ],
-        ...Object.keys(files).map((file) => [
-          file,
-          ((files[file].lf / files[file].lh) * 100).toString(),
-        ]),
-      ]).write();
+    .addRaw(summary)
+    .addBreak()
+    .addHeading('Test Results')
+    .addTable([
+      [
+        { data: 'File', header: true },
+        { data: 'Result', header: true },
+      ],
+      ...Object.keys(files).map((file) => [
+        file,
+        ((files[file].lf / files[file].lh) * 100).toString(),
+      ]),
+    ])
+    .write();
 }
 /**
  * Retrieves the inputs required for the operation.
