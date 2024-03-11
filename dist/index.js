@@ -22950,7 +22950,8 @@ function generateSummary(covered, not_covered, options) {
     title ${title}
     "Covered" : ${covered}
     "Not covered" : ${not_covered}
-\`\`\``;
+\`\`\`
+`;
 }
 
 // src/index.ts
