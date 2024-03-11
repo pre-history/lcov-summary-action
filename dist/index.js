@@ -22980,8 +22980,7 @@ async function main() {
       body: summary2
     });
   }
-  await core.summary.addRaw(summary2).write();
-  await core.summary.addHeading("Test Results").addTable([
+  await core.summary.addRaw(summary2).addBreak().addHeading("Test Results").addTable([
     [
       { data: "File", header: true },
       { data: "Result", header: true }
