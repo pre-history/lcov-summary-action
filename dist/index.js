@@ -22923,6 +22923,21 @@ function parseLcov(lcov) {
     percentage: coveragePercentage
   };
 }
+function parseLcovFiles(lcov) {
+  const lcovLines = lcov.split("\n");
+  const files = {};
+  let current = "";
+  lcovLines.forEach((line) => {
+    if (line.startsWith("SF:")) {
+      current = line.split(":")[1];
+    } else if (line.startsWith("LH:")) {
+      files[current] = { lh: parseInt(line.split(":")[1]), lf: 0 };
+    } else if (line.startsWith("LF:")) {
+      files[current] = { ...files[current], lf: parseInt(line.split(":")[1]) };
+    }
+  });
+  return files;
+}
 
 // src/summary.ts
 function generateSummary(covered, not_covered, options) {
@@ -22948,6 +22963,7 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
+  const files = parseLcovFiles(rawCoverageReport.toString());
   const summary2 = generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
@@ -22965,6 +22981,10 @@ async function main() {
     });
   }
   await core.summary.addRaw(summary2).write();
+  await core.summary.addHeading("Test Results").addTable([
+    [{ data: "File", header: true }, { data: "Result", header: true }],
+    ...Object.keys(files).map((file) => [file, (files[file].lf / files[file].lh * 100).toString()])
+  ]).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(
@@ -22979,14 +22999,15 @@ function getInputs() {
     commentPr: getInputBoolValue("comment-on-pr"),
     title: getInputValue("title"),
     primary_color: getInputValue("pie-covered-color"),
-    secondary_color: getInputValue("pie-not-covered-color")
+    secondary_color: getInputValue("pie-not-covered-color"),
+    coverage_rate: getInputValue("include-coverage-less-than")
   };
 }
 function getInputFilePath(inputName, defaultValue) {
   return path.join(WORKING_DIR, core.getInput(inputName) || defaultValue);
 }
 function getInputValue(inputName) {
-  return core.getInput(inputName);
+  return core.getInput(inputName, { trimWhitespace: true });
 }
 function getInputBoolValue(inputName) {
   return core.getBooleanInput(inputName);
