@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import * as fs from 'node:fs';
 import assert from 'node:assert';
-import {parseLcov, parseLcovFiles} from '../src/lcov_parser.ts';
+import { parseLcov, parseLcovFiles } from '../src/lcov_parser.ts';
 
 describe('coverage percentage', () => {
   it('should return the 0%', () => {
@@ -54,20 +54,23 @@ describe('coverage percentage', () => {
     );
 
     assert.equal(Object.keys(parseLcovFiles(fixture)).length, 1);
-    assert.equal(Object.keys(parseLcovFiles(fixture)).includes('src/example.rb'), true);
+    assert.equal(
+      Object.keys(parseLcovFiles(fixture)).includes('src/example.rb'),
+      true,
+    );
     assert.equal(parseLcovFiles(fixture)['src/example.rb'].lf, 10);
     assert.equal(parseLcovFiles(fixture)['src/example.rb'].lh, 10);
-  })
+  });
 
   it('should return list of the files and coverage', () => {
-    const fixture = fs.readFileSync(
-        'test/fixtures/50lcov.info.sample',
-        'utf8',
-    );
+    const fixture = fs.readFileSync('test/fixtures/50lcov.info.sample', 'utf8');
 
     assert.equal(Object.keys(parseLcovFiles(fixture)).length, 1);
-    assert.equal(Object.keys(parseLcovFiles(fixture)).includes('component/example.rb'), true);
+    assert.equal(
+      Object.keys(parseLcovFiles(fixture)).includes('component/example.rb'),
+      true,
+    );
     assert.equal(parseLcovFiles(fixture)['component/example.rb'].lf, 10);
     assert.equal(parseLcovFiles(fixture)['component/example.rb'].lh, 5);
-  })
+  });
 });

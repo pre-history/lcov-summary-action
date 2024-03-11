@@ -30,19 +30,20 @@ export function parseLcov(lcov: string): ParseLcov {
   };
 }
 
-
-export function parseLcovFiles(lcov: string): Record<string, { lh: number, lf: number }>  {
+export function parseLcovFiles(
+  lcov: string,
+): Record<string, { lh: number; lf: number }> {
   const lcovLines = lcov.split('\n');
 
-  const files: Record<string, { lh:number, lf: number }> = {}
-  let current = ''
+  const files: Record<string, { lh: number; lf: number }> = {};
+  let current = '';
   lcovLines.forEach((line) => {
     if (line.startsWith('SF:')) {
-      current = line.split(':')[1]
+      current = line.split(':')[1];
     } else if (line.startsWith('LH:')) {
-      files[current] = { lh: parseInt(line.split(':')[1]), lf: 0 }
+      files[current] = { lh: parseInt(line.split(':')[1]), lf: 0 };
     } else if (line.startsWith('LF:')) {
-      files[current] = { ...files[current], lf: parseInt(line.split(':')[1]) }
+      files[current] = { ...files[current], lf: parseInt(line.split(':')[1]) };
     }
   });
 

@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
-import {parseLcov, parseLcovFiles} from './lcov_parser';
+import { parseLcov, parseLcovFiles } from './lcov_parser';
 import { generateSummary } from './summary';
 /**
  * Represents the working directory.
@@ -49,11 +49,18 @@ async function main() {
   }
   await core.summary.addRaw(summary).write();
   await core.summary
-      .addHeading('Test Results')
-      .addTable([
-    [{data: 'File', header: true}, {data: 'Result', header: true}],
-    ...Object.keys(files).map((file) => [file, ((files[file].lf/files[file].lh)*100).toString() ]),
-  ]).write();
+    .addHeading('Test Results')
+    .addTable([
+      [
+        { data: 'File', header: true },
+        { data: 'Result', header: true },
+      ],
+      ...Object.keys(files).map((file) => [
+        file,
+        ((files[file].lf / files[file].lh) * 100).toString(),
+      ]),
+    ])
+    .write();
 }
 /**
  * Retrieves the inputs required for the operation.
