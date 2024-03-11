@@ -58,7 +58,7 @@ async function main() {
       ],
       ...Object.keys(files).map((file) => [
         file,
-        ((files[file].lf / files[file].lh) * 100).toString(),
+        ((files[file].lh / files[file].lf) * 100).toFixed(2) + '%',
       ]),
     ])
     .write();
