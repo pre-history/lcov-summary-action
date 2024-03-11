@@ -22982,8 +22982,14 @@ async function main() {
   }
   await core.summary.addRaw(summary2).write();
   await core.summary.addHeading("Test Results").addTable([
-    [{ data: "File", header: true }, { data: "Result", header: true }],
-    ...Object.keys(files).map((file) => [file, (files[file].lf / files[file].lh * 100).toString()])
+    [
+      { data: "File", header: true },
+      { data: "Result", header: true }
+    ],
+    ...Object.keys(files).map((file) => [
+      file,
+      (files[file].lf / files[file].lh * 100).toString()
+    ])
   ]).write();
 }
 function getInputs() {
