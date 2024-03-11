@@ -27,6 +27,7 @@ describe('index.ts', () => {
       title: 'title',
       primary_color: 'pie-covered-color',
       secondary_color: 'pie-not-covered-color',
+      coverage_rate: 'include-coverage-less-than',
     });
   });
 

@@ -77,7 +77,7 @@ jobs:
           fi
 
       - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@master
+        uses: pre-history/lcov-summary-action@table
         continue-on-error: true
         with:
           github-token: ${{ github.token }}

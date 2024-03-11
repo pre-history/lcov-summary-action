@@ -1,5 +1,9 @@
 name: 'LCOV Summary Reporter'
 description: 'Summarize LCOV coverage reports'
+author: 'Seuros (Abdelkader Boudih)'
+branding:
+  icon: bar-chart-2
+  color: green
 inputs:
   github-token:
     description: Github token
@@ -28,6 +32,10 @@ inputs:
     description: Color for pie chart not coverage part
     required: false
     default: '#FF5733'
+  include-coverage-less-than:
+    description: Include only the files with coverage less than this value %
+    required: false
+    default: 100
 runs:
   using: 'node20'
   main: 'dist/index.js'
