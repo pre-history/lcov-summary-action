@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseLcov } from './lcov_parser';
+import {parseLcov, parseLcovFiles} from './lcov_parser';
 import { generateSummary } from './summary';
 /**
  * Represents the working directory.
@@ -25,6 +25,7 @@ async function main() {
     return;
   }
   const result = parseLcov(rawCoverageReport.toString());
+  const files = parseLcovFiles(rawCoverageReport.toString());
   const summary = generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
@@ -47,6 +48,12 @@ async function main() {
     });
   }
   await core.summary.addRaw(summary).write();
+  await core.summary
+      .addHeading('Test Results')
+      .addTable([
+    [{data: 'File', header: true}, {data: 'Result', header: true}],
+    ...Object.keys(files).map((file) => [file, ((files[file].lf/files[file].lh)*100).toString() ]),
+  ]).write();
 }
 /**
  * Retrieves the inputs required for the operation.
@@ -67,6 +74,7 @@ export function getInputs() {
     title: getInputValue('title'),
     primary_color: getInputValue('pie-covered-color'),
     secondary_color: getInputValue('pie-not-covered-color'),
+    coverage_rate: getInputValue('include-coverage-less-than'),
   };
 }
 /**
@@ -90,7 +98,7 @@ export function getInputFilePath(
  * @return {string} The value of the input.
  */
 export function getInputValue(inputName: string): string {
-  return core.getInput(inputName);
+  return core.getInput(inputName, { trimWhitespace: true });
 }
 
 /**
