@@ -1,5 +1,9 @@
 name: 'LCOV Summary Reporter'
 description: 'Summarize LCOV coverage reports'
+author: 'Pre-history'
+branding:
+  icon: 'pie-chart'
+  color: 'green'
 inputs:
   github-token:
     description: Github token
@@ -27,6 +31,7 @@ inputs:
     description: Color for pie chart not coverage part
     required: false
     default: '#FF5733'
+
 runs:
   using: 'node20'
   main: 'dist/index.js'
