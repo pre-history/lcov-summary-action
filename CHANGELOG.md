@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.2.0...lcov-summary-action-v0.3.0) (2024-05-03)
+
+
+### Features
+
+* add readme ([#20](https://github.com/pre-history/lcov-summary-action/issues/20)) ([c578677](https://github.com/pre-history/lcov-summary-action/commit/c578677f611f6aa60dbc58dc9aa127232a0a9035))
+
+
+### Bug Fixes
+
+* branding for action marketplace ([1039ca2](https://github.com/pre-history/lcov-summary-action/commit/1039ca287129f4bc08023b14f9cc8bd2f3bbe9f5))
+
 ## [0.2.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.1.0...lcov-summary-action-v0.2.0) (2024-02-16)
 
 
