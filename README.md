@@ -32,16 +32,15 @@ Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 
 ## Inputs
 
-| Input Name | Description                                                      | Required | Default Value |
-| --- |------------------------------------------------------------------| --- | --- |
-| `github-token` | Github token                                                     | No | `${{ github.token }}` |
-| `title` | Summary title                                                    | No | - |
-| `lcov-file` | Path to LCOV file                                                | No | `./coverage/lcov.info` |
-| `comment-on-pr` | Add Diagram comment to the current PR [Need Permession](#Permissions) | No | `false` |
-| `working-directory` | Set working directory if project is not in root folder           | No | `./` |
-| `pie-covered-color` | Color for pie chart covered part                                 | No | `#4CAF50` |
-| `pie-not-covered-color` | Color for pie chart not coverage part                            | No | `#FF5733` |
-
+| Input Name              | Description                                                           | Required | Default Value          |
+| ----------------------- | --------------------------------------------------------------------- | -------- | ---------------------- |
+| `github-token`          | Github token                                                          | No       | `${{ github.token }}`  |
+| `title`                 | Summary title                                                         | No       | -                      |
+| `lcov-file`             | Path to LCOV file                                                     | No       | `./coverage/lcov.info` |
+| `comment-on-pr`         | Add Diagram comment to the current PR [Need Permession](#Permissions) | No       | `false`                |
+| `working-directory`     | Set working directory if project is not in root folder                | No       | `./`                   |
+| `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
+| `pie-not-covered-color` | Color for pie chart not coverage part                                 | No       | `#FF5733`              |
 
 ## Permissions
 
