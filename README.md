@@ -34,13 +34,13 @@ Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 
 | Input Name              | Description                                                           | Required | Default Value          |
 | ----------------------- | --------------------------------------------------------------------- | -------- | ---------------------- |
-| `github-token`          | Github token                                                          | No       | `${{ github.token }}`  |
+| `github-token`          | GitHub token                                                          | Yes      | `${{ github.token }}`  |
 | `title`                 | Summary title                                                         | No       | -                      |
-| `lcov-file`             | Path to LCOV file                                                     | No       | `./coverage/lcov.info` |
-| `comment-on-pr`         | Add Diagram comment to the current PR [Need Permession](#Permissions) | No       | `false`                |
+| `lcov-file`             | Path to LCOV file                                                     | Yes      | `./coverage/lcov.info` |
+| `comment-on-pr`         | Add diagram comment to the current PR [Need Permission](#permissions) | No       | `false`                |
 | `working-directory`     | Set working directory if project is not in root folder                | No       | `./`                   |
 | `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
-| `pie-not-covered-color` | Color for pie chart not coverage part                                 | No       | `#FF5733`              |
+| `pie-not-covered-color` | Color for pie chart not covered part                                  | No       | `#FF5733`              |
 
 ## Permissions
 
@@ -60,11 +60,3 @@ permissions:
 ```
 
 This ensures that the action has the necessary permissions to post the coverage summary as a comment on the pull request.
-
-## Contributing
-
-Contributions to the LCOV Summary Action are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) before getting started.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/actions/setup-node/blob/main/LICENSE) file for details.
