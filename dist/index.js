@@ -22857,7 +22857,7 @@ function generateSummary(covered, not_covered, options) {
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
   return `\`\`\`mermaid
-  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#000', 'darkMode': { 'primaryTextColor': '#fff'  } }}}%%
+  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
     pie showData
     title ${title}
     "Covered" : ${covered}
@@ -22904,10 +22904,7 @@ async function main() {
     ],
     ["Total Covered", result.covered.toString()],
     ["Total Uncovered", result.not_covered.toString()]
-  ]).addBreak().addRaw(
-    `
-    ${summary2}`
-  ).write();
+  ]).addRaw("", true).addRaw(summary2).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(
