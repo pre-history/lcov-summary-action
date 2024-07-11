@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.3.1...lcov-summary-action-v0.4.0) (2024-07-11)
+
+
+### Features
+
+* add summary legends ([#25](https://github.com/pre-history/lcov-summary-action/issues/25)) ([27785ce](https://github.com/pre-history/lcov-summary-action/commit/27785ce6e8ae369832ca055f2d62bb20180644d5))
+
 ## [0.3.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.3.0...lcov-summary-action-v0.3.1) (2024-07-11)
 
 
