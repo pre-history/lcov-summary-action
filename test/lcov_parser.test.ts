@@ -1,21 +1,23 @@
 import { describe, it } from 'node:test';
 import * as fs from 'node:fs';
 import assert from 'node:assert';
-import { parseLcov } from '../src/lcov_parser.ts';
+import { parseLcov } from '../src/lcov_parser';
 
 describe('coverage percentage', () => {
   it('should return the 0%', () => {
     const fixture = fs.readFileSync('test/fixtures/0lcov.info.sample', 'utf8');
 
+    const result = parseLcov(fixture);
     // ## This should return 0% coverage
-    assert.equal(parseLcov(fixture).percentage, 0);
+    assert.equal(result.percentage, 0);
   });
 
   it('should return the 50%', () => {
     const fixture = fs.readFileSync('test/fixtures/50lcov.info.sample', 'utf8');
 
+    const result = parseLcov(fixture);
     // ## This should return 50% coverage
-    assert.equal(parseLcov(fixture).percentage, 50);
+    assert.equal(result.percentage, 50);
   });
 
   it('should return the 100%', () => {
@@ -24,8 +26,9 @@ describe('coverage percentage', () => {
       'utf8',
     );
 
+    const result = parseLcov(fixture);
     // ## This should return 100% coverage
-    assert.equal(parseLcov(fixture).percentage, 100);
+    assert.equal(result.percentage, 100);
   });
 
   it('should return the 37.04%', () => {
@@ -43,7 +46,8 @@ describe('coverage percentage', () => {
       'test/fixtures/empty-lcov.info.sample',
       'utf8',
     );
+    const result = parseLcov(fixture);
     // ## This should return 0% coverage
-    assert.equal(parseLcov(fixture).percentage, 0);
+    assert.equal(result.percentage, 0);
   });
 });
