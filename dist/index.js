@@ -22891,7 +22891,20 @@ async function main() {
       body: summary2
     });
   }
-  await core.summary.addRaw(summary2).write();
+  await core.summary.addTable([
+    [
+      { data: "Details", header: true },
+      { data: "Result", header: true }
+    ],
+    ["Coverage file", inputs.lcovFile],
+    ["Coverage file exist", (!!rawCoverageReport).toString()],
+    [
+      "Coverage file entries",
+      (result.covered + result.not_covered).toString()
+    ],
+    ["Total Covered", result.covered.toString()],
+    ["Total Uncovered", result.not_covered.toString()]
+  ]).addRaw(summary2).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(
