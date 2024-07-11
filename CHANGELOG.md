@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.3.0...lcov-summary-action-v0.3.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* dark mode text ([#23](https://github.com/pre-history/lcov-summary-action/issues/23)) ([ab83e03](https://github.com/pre-history/lcov-summary-action/commit/ab83e03dd7b68f447a6d9e01be55e215dc99d734))
+
 ## [0.3.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.2.0...lcov-summary-action-v0.3.0) (2024-05-03)
 
 
