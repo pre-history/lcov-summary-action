@@ -22857,7 +22857,7 @@ function generateSummary(covered, not_covered, options) {
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
   return `\`\`\`mermaid
-  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#000', 'darkMode': { 'primaryTextColor': '#fff'  } }}}%%
+  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
     pie showData
     title ${title}
     "Covered" : ${covered}
@@ -22891,7 +22891,20 @@ async function main() {
       body: summary2
     });
   }
-  await core.summary.addRaw(summary2).write();
+  await core.summary.addTable([
+    [
+      { data: "Details", header: true },
+      { data: "Result", header: true }
+    ],
+    ["Coverage file", inputs.lcovFile],
+    ["Coverage file exist", (!!rawCoverageReport).toString()],
+    [
+      "Coverage file entries",
+      (result.covered + result.not_covered).toString()
+    ],
+    ["Total Covered", result.covered.toString()],
+    ["Total Uncovered", result.not_covered.toString()]
+  ]).addRaw("", true).addRaw(summary2).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(

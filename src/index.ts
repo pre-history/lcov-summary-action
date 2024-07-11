@@ -46,7 +46,24 @@ async function main() {
       body: summary,
     });
   }
-  await core.summary.addRaw(summary).write();
+  await core.summary
+    .addTable([
+      [
+        { data: 'Details', header: true },
+        { data: 'Result', header: true },
+      ],
+      ['Coverage file', inputs.lcovFile],
+      ['Coverage file exist', (!!rawCoverageReport).toString()],
+      [
+        'Coverage file entries',
+        (result.covered + result.not_covered).toString(),
+      ],
+      ['Total Covered', result.covered.toString()],
+      ['Total Uncovered', result.not_covered.toString()],
+    ])
+    .addRaw('', true)
+    .addRaw(summary)
+    .write();
 }
 /**
  * Retrieves the inputs required for the operation.

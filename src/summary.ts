@@ -13,7 +13,7 @@ export function generateSummary(
   const secondary = options?.secondary_color || '#FF5733';
   const title = options?.title || 'Project Coverage';
   return `\`\`\`mermaid
-  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#000', 'darkMode': { 'primaryTextColor': '#fff'  } }}}%%
+  %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
     pie showData
     title ${title}
     "Covered" : ${covered}
