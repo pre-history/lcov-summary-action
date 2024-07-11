@@ -22891,7 +22891,7 @@ async function main() {
       body: summary2
     });
   }
-  await core.summary.addRaw(summary2).addSeparator().addTable([
+  await core.summary.addTable([
     [
       { data: "Details", header: true },
       { data: "Result", header: true }
@@ -22904,7 +22904,7 @@ async function main() {
     ],
     ["Total Covered", result.covered.toString()],
     ["Total Uncovered", result.not_covered.toString()]
-  ]).write();
+  ]).addBreak().addRaw(summary2).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(

@@ -47,8 +47,6 @@ async function main() {
     });
   }
   await core.summary
-    .addRaw(summary)
-    .addSeparator()
     .addTable([
       [
         { data: 'Details', header: true },
@@ -63,6 +61,8 @@ async function main() {
       ['Total Covered', result.covered.toString()],
       ['Total Uncovered', result.not_covered.toString()],
     ])
+    .addBreak()
+    .addRaw(summary)
     .write();
 }
 /**
