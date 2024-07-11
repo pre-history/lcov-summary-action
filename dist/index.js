@@ -22904,7 +22904,10 @@ async function main() {
     ],
     ["Total Covered", result.covered.toString()],
     ["Total Uncovered", result.not_covered.toString()]
-  ]).addBreak().addRaw(summary2).write();
+  ]).addBreak().addRaw(
+    `
+    ${summary2}`
+  ).write();
 }
 function getInputs() {
   const lcovFile = getInputFilePath(

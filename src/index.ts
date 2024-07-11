@@ -62,7 +62,10 @@ async function main() {
       ['Total Uncovered', result.not_covered.toString()],
     ])
     .addBreak()
-    .addRaw(summary)
+    .addRaw(
+      `
+    ${summary}`,
+    )
     .write();
 }
 /**
