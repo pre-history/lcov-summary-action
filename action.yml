@@ -31,7 +31,10 @@ inputs:
     description: Color for pie chart not coverage part
     required: false
     default: '#FF5733'
-
+  debug-lcov:
+    description: Debug LCOV file (Show the content of the LCOV file)
+    required: false
+    default: false
 runs:
   using: 'node20'
   main: 'dist/index.js'

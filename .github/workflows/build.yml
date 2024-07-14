@@ -77,9 +77,9 @@ jobs:
           fi
 
       - name: Lcov Summary
-        uses: pre-history/lcov-summary-action@master
+        uses: pre-history/lcov-summary-action@debug
         continue-on-error: true
         with:
-          github-token: ${{ github.token }}
           title: 'Coverage Report'
           comment-on-pr: true
+          debug-lcov: true

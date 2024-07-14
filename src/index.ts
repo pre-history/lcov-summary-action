@@ -24,6 +24,12 @@ async function main() {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
+  if (inputs.debugLcov) {
+    console.log('====================LCOV FILE REPORT====================');
+    console.log(rawCoverageReport.toString());
+    console.log('========================================================');
+  }
+
   const result = parseLcov(rawCoverageReport.toString());
   const summary = generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
@@ -84,6 +90,7 @@ export function getInputs() {
     title: getInputValue('title'),
     primary_color: getInputValue('pie-covered-color'),
     secondary_color: getInputValue('pie-not-covered-color'),
+    debugLcov: getInputBoolValue('debug-lcov'),
   };
 }
 /**
