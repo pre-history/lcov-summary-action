@@ -22,10 +22,7 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
 
 ```yaml
 - name: LCOV Summary
-  uses: pre-history/lcov-summary-action@v1
-  with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
-    lcov-file: ./path/to/your/lcov.info
+  uses: pre-history/lcov-summary-action@v0.4.1
 ```
 
 Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
@@ -33,10 +30,10 @@ Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 ## Inputs
 
 | Input Name              | Description                                                           | Required | Default Value          |
-| ----------------------- | --------------------------------------------------------------------- | -------- | ---------------------- |
-| `github-token`          | GitHub token                                                          | Yes      | `${{ github.token }}`  |
+| ----------------------- | --------------------------------------------------------------------- |----------| ---------------------- |
+| `github-token`          | GitHub token                                                          | NO       | `${{ github.token }}`  |
 | `title`                 | Summary title                                                         | No       | -                      |
-| `lcov-file`             | Path to LCOV file                                                     | Yes      | `./coverage/lcov.info` |
+| `lcov-file`             | Path to LCOV file                                                     | No       | `./coverage/lcov.info` |
 | `comment-on-pr`         | Add diagram comment to the current PR [Need Permission](#permissions) | No       | `false`                |
 | `working-directory`     | Set working directory if project is not in root folder                | No       | `./`                   |
 | `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
