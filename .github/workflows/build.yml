@@ -49,32 +49,32 @@ jobs:
       - name: Linter
         run: pnpm prettier:check
 
-#      - name: Test
-#        run: pnpm coverage
+      #      - name: Test
+      #        run: pnpm coverage
 
-#      - name: rebase
-#        run: |
-#          git config pull.rebase true
-#          git pull origin ${{ github.head_ref }}
+      #      - name: rebase
+      #        run: |
+      #          git config pull.rebase true
+      #          git pull origin ${{ github.head_ref }}
 
       - name: Build
         run: pnpm build
 
-#      - name: commit to current branch the dist folder
-#        run: |
-#          set -e
-#          trap 'git add dist' ERR
-#          git config --global user.name github-actions[bot]
-#          git config --global user.email ${{github.actor_id}}+github-actions[bot]@users.noreply.github.com
-#          echo "The files that are going to be pushed are:"
-#          git diff --name-only --cached
-#          git add dist
-#          if git diff --cached --quiet; then
-#            echo "No changes to commit"
-#          else
-#            git commit -m "chore: build dist folder"
-#            git push origin HEAD:${{ github.head_ref }}
-#          fi
+      #      - name: commit to current branch the dist folder
+      #        run: |
+      #          set -e
+      #          trap 'git add dist' ERR
+      #          git config --global user.name github-actions[bot]
+      #          git config --global user.email ${{github.actor_id}}+github-actions[bot]@users.noreply.github.com
+      #          echo "The files that are going to be pushed are:"
+      #          git diff --name-only --cached
+      #          git add dist
+      #          if git diff --cached --quiet; then
+      #            echo "No changes to commit"
+      #          else
+      #            git commit -m "chore: build dist folder"
+      #            git push origin HEAD:${{ github.head_ref }}
+      #          fi
 
       - name: Lcov Summary
         uses: pre-history/lcov-summary-action@debug
