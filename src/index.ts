@@ -21,17 +21,19 @@ async function main() {
   const inputs = getInputs();
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
-    core.summary.addTable([
-      [
-        { data: 'Details', header: true },
-        { data: 'Result', header: true },
-      ],
-      ['Coverage file', inputs.lcovFile],
-      ['Coverage file exist', (!!rawCoverageReport).toString()],
-      ['Coverage file entries', '0'],
-      ['Total Covered', '0'],
-      ['Total Uncovered', '0'],
-    ]);
+    await core.summary
+      .addTable([
+        [
+          { data: 'Details', header: true },
+          { data: 'Result', header: true },
+        ],
+        ['Coverage file', inputs.lcovFile],
+        ['Coverage file exist', (!!rawCoverageReport).toString()],
+        ['Coverage file entries', '0'],
+        ['Total Covered', '0'],
+        ['Total Uncovered', '0'],
+      ])
+      .write();
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
     return;
   }
