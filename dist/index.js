@@ -22872,7 +22872,17 @@ async function main() {
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
-    return;
+    return core.summary.addTable([
+      [
+        { data: "Details", header: true },
+        { data: "Result", header: true }
+      ],
+      ["Coverage file", inputs.lcovFile],
+      ["Coverage file exist", (!!rawCoverageReport).toString()],
+      ["Coverage file entries", "0"],
+      ["Total Covered", "0"],
+      ["Total Uncovered", "0"]
+    ]);
   }
   if (inputs.debugLcov) {
     console.log("====================LCOV FILE REPORT====================");
@@ -22938,7 +22948,11 @@ function getInputBoolValue(inputName) {
   return core.getBooleanInput(inputName);
 }
 function readFileSafe(filepath) {
-  return fs.readFileSync(filepath, "utf8");
+  try {
+    return fs.readFileSync(filepath, "utf8");
+  } catch {
+    return void 0;
+  }
 }
 if (require.main === module) {
   main().catch(function(err) {

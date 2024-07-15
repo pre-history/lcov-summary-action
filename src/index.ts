@@ -22,7 +22,17 @@ async function main() {
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
-    return;
+    return core.summary.addTable([
+      [
+        { data: 'Details', header: true },
+        { data: 'Result', header: true },
+      ],
+      ['Coverage file', inputs.lcovFile],
+      ['Coverage file exist', (!!rawCoverageReport).toString()],
+      ['Coverage file entries', '0'],
+      ['Total Covered', '0'],
+      ['Total Uncovered', '0'],
+    ]);
   }
   if (inputs.debugLcov) {
     console.log('====================LCOV FILE REPORT====================');
@@ -134,7 +144,11 @@ export function getInputBoolValue(inputName: string): boolean {
  * @returns {string} - A Promise that resolves with the file content as a string if the file is successfully read, or null if an error occurs.
  */
 export function readFileSafe(filepath: string) {
-  return fs.readFileSync(filepath, 'utf8');
+  try {
+    return fs.readFileSync(filepath, 'utf8');
+  } catch {
+    return undefined;
+  }
 }
 
 if (require.main === module) {
