@@ -21,8 +21,7 @@ async function main() {
   const inputs = getInputs();
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
-    console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
-    return core.summary.addTable([
+    core.summary.addTable([
       [
         { data: 'Details', header: true },
         { data: 'Result', header: true },
@@ -33,6 +32,8 @@ async function main() {
       ['Total Covered', '0'],
       ['Total Uncovered', '0'],
     ]);
+    console.log(`No coverage report found at '${inputs.lcovFile}', exiting...`);
+    return;
   }
   if (inputs.debugLcov) {
     console.log('====================LCOV FILE REPORT====================');
