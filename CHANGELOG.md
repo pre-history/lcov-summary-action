@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.4.0...lcov-summary-action-v0.4.1) (2024-07-15)
+
+
+### Bug Fixes
+
+* add debug mode ([#27](https://github.com/pre-history/lcov-summary-action/issues/27)) ([cb72781](https://github.com/pre-history/lcov-summary-action/commit/cb727810adcb6979ee5e2d38b19c7240c3de8af0))
+* avoid crash when lcov file doesn't exist ([#30](https://github.com/pre-history/lcov-summary-action/issues/30)) ([92cfd23](https://github.com/pre-history/lcov-summary-action/commit/92cfd232d5e397a09938971d49a962be66c7ca42))
+
 ## [0.4.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.3.1...lcov-summary-action-v0.4.0) (2024-07-11)
 
 
