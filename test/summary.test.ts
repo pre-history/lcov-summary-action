@@ -24,6 +24,7 @@ describe('summary diagram generator', () => {
     const primary_color = '#1342a8';
     const secondary_color = '#ce650b';
     const title = 'Test Coverage';
+
     const expected = `\`\`\`mermaid
   %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${secondary_color}', 'secondaryColor': '${primary_color}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
     pie showData
