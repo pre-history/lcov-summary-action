@@ -4,6 +4,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { parseLcov } from './lcov_parser';
 import { generateSummary } from './summary';
+
+interface ActionInputs {
+  githubToken: string;
+  workingDir: string;
+  lcovFile: string;
+  commentPr: boolean;
+  title: string;
+  primary_color: string;
+  secondary_color: string;
+  debugLcov: boolean;
+}
 /**
  * Represents the working directory.
  *
@@ -89,12 +100,11 @@ async function main() {
  *
  * @return {Object} The input values.
  */
-export function getInputs() {
+export function getInputs(): ActionInputs {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
     './coverage/lcov.info',
   );
-  const baseFile = getInputValue('lcov-base');
   return {
     githubToken: getInputValue('github-token'),
     workingDir: WORKING_DIR,
