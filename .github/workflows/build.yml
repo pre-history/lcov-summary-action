@@ -20,37 +20,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
-          run_install: false
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.11.0
-          registry-url: https://npm.pkg.github.com
-          cache: 'pnpm'
-          cache-dependency-path: 'pnpm-lock.yaml'
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies 👨🏻‍💻
-        run: pnpm i --frozen-lockfile
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
 
       - name: Linter
-        run: pnpm prettier:check
+        run: bun run prettier:check
 
       - name: Test
-        run: pnpm coverage
+        run: bun run coverage
 
       - name: rebase
         run: |
@@ -58,7 +38,7 @@ jobs:
           git pull origin ${{ github.head_ref }}
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
       - name: commit to current branch the dist folder
         run: |
