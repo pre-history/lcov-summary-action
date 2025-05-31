@@ -2,8 +2,8 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
-import { parseLcov } from './lcov_parser';
-import { generateSummary } from './summary';
+import { parseLcov, compareLcov } from './lcov_parser';
+import { generateSummary, generateDetailedSummary } from './summary';
 /**
  * Represents the working directory.
  *
@@ -44,11 +44,33 @@ async function main() {
   }
 
   const result = parseLcov(rawCoverageReport.toString());
-  const summary = generateSummary(result.covered, result.not_covered, {
-    title: inputs.title,
-    primary_color: inputs.primary_color,
-    secondary_color: inputs.secondary_color,
-  });
+  
+  // Parse base LCOV file if provided
+  let baseResult = undefined;
+  let diff = null;
+  if (inputs.baseLcovFile) {
+    const rawBaseReport = readFileSafe(inputs.baseLcovFile);
+    if (rawBaseReport) {
+      baseResult = parseLcov(rawBaseReport.toString());
+      diff = compareLcov(result, baseResult);
+    } else {
+      core.warning(`Base LCOV file not found at '${inputs.baseLcovFile}'`);
+    }
+  }
+  
+  // Generate summary based on detailed mode
+  const summary = inputs.detailedSummary 
+    ? generateDetailedSummary(result, diff, {
+        title: inputs.title,
+        primary_color: inputs.primary_color,
+        secondary_color: inputs.secondary_color,
+        max_files_shown: inputs.maxFilesShown,
+      })
+    : generateSummary(result.covered, result.not_covered, {
+        title: inputs.title,
+        primary_color: inputs.primary_color,
+        secondary_color: inputs.secondary_color,
+      });
   const context = github.context;
   if (
     context.payload.pull_request &&
@@ -103,6 +125,7 @@ async function main() {
       ['Total Covered', result.covered.toString()],
       ['Total Uncovered', result.not_covered.toString()],
       ['Coverage Percentage', `${result.percentage}%`],
+      ['Files Analyzed', result.total_files.toString()],
     ])
     .addRaw('', true)
     .addRaw(summary)
@@ -119,16 +142,22 @@ export function getInputs(): {
   githubToken: string;
   workingDir: string;
   lcovFile: string;
+  baseLcovFile?: string;
   commentPr: boolean;
   title: string;
   primary_color: string;
   secondary_color: string;
   debugLcov: boolean;
+  detailedSummary: boolean;
+  maxFilesShown: number;
 } {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
     './coverage/lcov.info',
   );
+  
+  const baseLcovInput = getInputValue('base-lcov-file');
+  const baseLcovFile = baseLcovInput ? getInputFilePath(baseLcovInput, '') : undefined;
   
   const primaryColor = getInputValue('pie-covered-color') || '#4CAF50';
   const secondaryColor = getInputValue('pie-not-covered-color') || '#FF5733';
@@ -140,15 +169,24 @@ export function getInputs(): {
     core.warning(`Invalid secondary color '${secondaryColor}', using default #FF5733`);
   }
   
+  const maxFilesInput = getInputValue('max-files-shown');
+  const maxFilesShown = maxFilesInput ? parseInt(maxFilesInput, 10) : 10;
+  if (isNaN(maxFilesShown) || maxFilesShown < 1) {
+    core.warning(`Invalid max-files-shown '${maxFilesInput}', using default 10`);
+  }
+  
   return {
     githubToken: getInputValue('github-token'),
     workingDir: WORKING_DIR,
     lcovFile: lcovFile,
+    baseLcovFile: baseLcovFile,
     commentPr: getInputBoolValue('comment-on-pr'),
     title: getInputValue('title'),
     primary_color: isValidHexColor(primaryColor) ? primaryColor : '#4CAF50',
     secondary_color: isValidHexColor(secondaryColor) ? secondaryColor : '#FF5733',
     debugLcov: getInputBoolValue('debug-lcov'),
+    detailedSummary: getInputBoolValue('detailed-summary'),
+    maxFilesShown: !isNaN(maxFilesShown) && maxFilesShown >= 1 ? maxFilesShown : 10,
   };
 }
 /**
