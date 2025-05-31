@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.4.1...lcov-summary-action-v0.5.0) (2025-05-31)
+
+
+### Features
+
+* update flow to reactivate on new push, switch to bun ([44ca770](https://github.com/pre-history/lcov-summary-action/commit/44ca770fdef6ac28f72c2054979e937f8df1360a))
+
 ## [0.4.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.4.0...lcov-summary-action-v0.4.1) (2024-07-15)
 
 
