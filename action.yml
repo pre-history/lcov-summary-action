@@ -61,7 +61,11 @@ inputs:
   badge-style:
     description: Badge style (flat, flat-square, plastic, for-the-badge, social)
     required: false
-    default: 'flat'
+    default: 'flat'  
+  show-coverage-sprite:
+    description: Show coverage sprite icon in PR comments (0%, 10%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%)
+    required: false
+    default: 'false'
 runs:
   using: 'node20'
   main: 'dist/index.js'

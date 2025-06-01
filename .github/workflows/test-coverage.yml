@@ -43,6 +43,7 @@ jobs:
           coverage-threshold: '0' # 0% because our tests are unit tests, not integration tests
           title: 'LCovMan Self-Test Coverage 🦕 (Updated!)'
           working-directory: './'
+          show-coverage-sprite: true
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4

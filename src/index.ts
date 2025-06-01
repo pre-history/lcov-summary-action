@@ -68,11 +68,13 @@ async function main() {
         coverage_threshold: inputs.coverageThreshold,
         generate_badge: inputs.generateBadge,
         badge_style: inputs.badgeStyle,
+        show_coverage_sprite: inputs.showCoverageSprite,
       })
     : generateSummary(result.covered, result.not_covered, {
         title: inputs.title,
         primary_color: inputs.primary_color,
         secondary_color: inputs.secondary_color,
+        show_coverage_sprite: inputs.showCoverageSprite,
       });
   const context = github.context;
 
@@ -283,6 +285,7 @@ export function getInputs(): {
   failOnDecrease: boolean;
   generateBadge: boolean;
   badgeStyle: string;
+  showCoverageSprite: boolean;
 } {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
@@ -361,6 +364,7 @@ export function getInputs(): {
       }
       return style;
     })(),
+    showCoverageSprite: getInputBoolValue('show-coverage-sprite'),
   };
 }
 /**

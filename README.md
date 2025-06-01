@@ -19,6 +19,7 @@ title Project Coverage
 - Summarizes LCOV reports in GitHub Pull Requests.
 - Provides a clear and concise overview of code coverage changes.
 - Helps maintain high test coverage by making coverage changes visible in each PR.
+- Optional coverage sprite icons to visualize coverage levels (0%, 10%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%).
 
 ## Usage
 
@@ -27,9 +28,11 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
 ```yaml
 - name: LCOV Summary
   uses: pre-history/lcov-summary-action@v0.4.1
+  with:
+    lcov-file: './coverage/lcov.info'
+    comment-on-pr: true
+    show-coverage-sprite: true
 ```
-
-Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 
 ## Inputs
 
@@ -42,6 +45,7 @@ Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 | `working-directory`     | Set working directory if project is not in root folder                | No       | `./`                   |
 | `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
 | `pie-not-covered-color` | Color for pie chart not covered part                                  | No       | `#FF5733`              |
+| `show-coverage-sprite`  | Show coverage sprite icon in PR comments                              | No       | `false`                |
 
 ## Permissions
 

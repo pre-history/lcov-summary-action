@@ -1,5 +1,31 @@
 import { ParseLcov, FileCoverage, CoverageDiff } from './lcov_parser';
 
+/**
+ * Selects the appropriate sprite based on coverage percentage
+ */
+function getCoverageSprite(percentage: number): string {
+  // Round to nearest 10% but handle special cases
+  if (percentage === 0) return '0.png';
+  if (percentage < 15) return '10.png';
+  if (percentage < 35) return '30.png';
+  if (percentage < 45) return '40.png';
+  if (percentage < 55) return '50.png';
+  if (percentage < 65) return '60.png';
+  if (percentage < 75) return '70.png';
+  if (percentage < 85) return '80.png';
+  if (percentage < 95) return '90.png';
+  return '100.png';
+}
+
+/**
+ * Generates coverage sprite markdown
+ */
+function generateCoverageSprite(percentage: number): string {
+  const sprite = getCoverageSprite(percentage);
+  const spriteUrl = `https://raw.githubusercontent.com/seuros/lcov-summary-action/master/sprites/icons/${sprite}`;
+  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+}
+
 interface Options {
   title?: string;
   primary_color?: string;
@@ -9,6 +35,7 @@ interface Options {
   coverage_threshold?: number;
   generate_badge?: boolean;
   badge_style?: string;
+  show_coverage_sprite?: boolean;
 }
 
 export function generateSummary(
@@ -19,7 +46,14 @@ export function generateSummary(
   const primary = options?.primary_color || '#4CAF50';
   const secondary = options?.secondary_color || '#FF5733';
   const title = options?.title || 'Project Coverage';
-  return `## 📊 ${title}
+  const total = covered + not_covered;
+  const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
+  
+  const spriteHtml = options?.show_coverage_sprite 
+    ? generateCoverageSprite(percentage)
+    : '';
+    
+  return `## ${spriteHtml}📊 ${title}
 
 \`\`\`mermaid
   %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
@@ -49,7 +83,11 @@ export function generateDetailedSummary(
   const thresholdText =
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
-  let summary = `## 📊 ${title}
+  const spriteHtml = options?.show_coverage_sprite 
+    ? generateCoverageSprite(result.percentage)
+    : '';
+
+  let summary = `## ${spriteHtml}📊 ${title}
 
 ### Overall Coverage
 - **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)${thresholdText}
