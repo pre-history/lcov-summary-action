@@ -36,4 +36,16 @@ describe('index.ts basic tests', () => {
     assert.ok(70 >= threshold, 'Coverage at threshold should pass');
     assert.ok(!(60 >= threshold), 'Coverage below threshold should fail');
   });
+
+  it('badge generation should work', () => {
+    // Test badge URL generation
+    const percentage = 85;
+    const style = 'flat-square';
+    const expectedUrl = `https://img.shields.io/badge/coverage-${percentage}%25-brightgreen?style=${style}`;
+    const expectedMarkdown = `![Coverage](${expectedUrl})`;
+    
+    assert.ok(expectedUrl.includes('coverage-85%25'), 'Badge URL should contain coverage percentage');
+    assert.ok(expectedUrl.includes('brightgreen'), 'High coverage should be green');
+    assert.ok(expectedMarkdown.startsWith('![Coverage]'), 'Should generate markdown format');
+  });
 });

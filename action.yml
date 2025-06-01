@@ -54,6 +54,14 @@ inputs:
     description: Fail if coverage decreases compared to base
     required: false
     default: 'false'
+  generate-badge:
+    description: Generate coverage badge markdown for README
+    required: false
+    default: 'false'
+  badge-style:
+    description: Badge style (flat, flat-square, plastic, for-the-badge, social)
+    required: false
+    default: 'flat'
 runs:
   using: 'node20'
   main: 'dist/index.js'

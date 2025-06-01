@@ -66,6 +66,8 @@ async function main() {
         secondary_color: inputs.secondary_color,
         max_files_shown: inputs.maxFilesShown,
         coverage_threshold: inputs.coverageThreshold,
+        generate_badge: inputs.generateBadge,
+        badge_style: inputs.badgeStyle,
       })
     : generateSummary(result.covered, result.not_covered, {
         title: inputs.title,
@@ -138,6 +140,18 @@ async function main() {
     console.log(`${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`);
   }
   
+  // Generate badge if requested
+  if (inputs.generateBadge) {
+    const badge = generateCoverageBadge(result.percentage, inputs.badgeStyle);
+    core.info(`Coverage Badge URL: ${badge.url}`);
+    core.info(`Coverage Badge Markdown: ${badge.markdown}`);
+    
+    // Add to summary
+    core.summary.addHeading('Coverage Badge', 3)
+      .addRaw(`Copy this to your README.md:\n\n\`\`\`markdown\n${badge.markdown}\n\`\`\`\n\n`)
+      .addRaw(`Preview: ${badge.markdown}\n\n`);
+  }
+  
   await core.summary
     .addTable([
       [
@@ -168,6 +182,23 @@ function isValidHexColor(color: string): boolean {
   return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
 }
 
+/**
+ * Generates a coverage badge URL and markdown.
+ */
+function generateCoverageBadge(percentage: number, style: string = 'flat'): { url: string; markdown: string } {
+  // Determine color based on coverage percentage
+  let color = 'red';
+  if (percentage >= 80) color = 'brightgreen';
+  else if (percentage >= 60) color = 'yellow';
+  else if (percentage >= 40) color = 'orange';
+  
+  const percentageText = `${percentage}%25`; // URL encode the % symbol
+  const url = `https://img.shields.io/badge/coverage-${percentageText}-${color}?style=${style}`;
+  const markdown = `![Coverage](${url})`;
+  
+  return { url, markdown };
+}
+
 export function getInputs(): {
   githubToken: string;
   workingDir: string;
@@ -182,6 +213,8 @@ export function getInputs(): {
   maxFilesShown: number;
   coverageThreshold: number;
   failOnDecrease: boolean;
+  generateBadge: boolean;
+  badgeStyle: string;
 } {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
@@ -227,6 +260,8 @@ export function getInputs(): {
     maxFilesShown: !isNaN(maxFilesShown) && maxFilesShown >= 1 ? maxFilesShown : 10,
     coverageThreshold: !isNaN(coverageThreshold) && coverageThreshold >= 0 && coverageThreshold <= 100 ? coverageThreshold : 70,
     failOnDecrease: getInputBoolValue('fail-on-coverage-decrease'),
+    generateBadge: getInputBoolValue('generate-badge'),
+    badgeStyle: getInputValue('badge-style') || 'flat',
   };
 }
 /**

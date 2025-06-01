@@ -7,6 +7,8 @@ interface Options {
   show_files?: boolean;
   max_files_shown?: number;
   coverage_threshold?: number;
+  generate_badge?: boolean;
+  badge_style?: string;
 }
 
 export function generateSummary(
@@ -159,6 +161,29 @@ title ${title}
       });
       summary += '\n';
     }
+  }
+
+  // Add badge if requested
+  if (options?.generate_badge) {
+    const badgeStyle = options?.badge_style || 'flat';
+    let badgeColor = 'red';
+    if (result.percentage >= 80) badgeColor = 'brightgreen';
+    else if (result.percentage >= 60) badgeColor = 'yellow';
+    else if (result.percentage >= 40) badgeColor = 'orange';
+    
+    const percentageText = `${result.percentage}%25`;
+    const badgeUrl = `https://img.shields.io/badge/coverage-${percentageText}-${badgeColor}?style=${badgeStyle}`;
+    const badgeMarkdown = `![Coverage](${badgeUrl})`;
+    
+    summary += `### Coverage Badge 📊
+Copy this to your README.md:
+\`\`\`markdown
+${badgeMarkdown}
+\`\`\`
+
+Preview: ${badgeMarkdown}
+
+`;
   }
 
   summary += `---
