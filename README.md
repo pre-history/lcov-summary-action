@@ -34,7 +34,7 @@ Replace `./path/to/your/lcov.info` with the path to your LCOV report file.
 ## Inputs
 
 | Input Name              | Description                                                           | Required | Default Value          |
-| ----------------------- | --------------------------------------------------------------------- |----------| ---------------------- |
+| ----------------------- | --------------------------------------------------------------------- | -------- | ---------------------- |
 | `github-token`          | GitHub token                                                          | NO       | `${{ github.token }}`  |
 | `title`                 | Summary title                                                         | No       | -                      |
 | `lcov-file`             | Path to LCOV file                                                     | No       | `./coverage/lcov.info` |

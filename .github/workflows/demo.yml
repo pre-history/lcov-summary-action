@@ -3,58 +3,58 @@ name: LCovMan Demo Showcase
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * 1'  # Weekly on Monday at noon
+    - cron: '0 12 * * 1' # Weekly on Monday at noon
 
 jobs:
   demo-scenarios:
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
       pull-requests: write
-    
+
     strategy:
       matrix:
         scenario:
-          - name: "High Coverage (100%)"
-            file: "100lcov.info.sample"
-            threshold: "80"
-            style: "flat-square"
-          - name: "Medium Coverage (50%)"
-            file: "50lcov.info.sample"
-            threshold: "70"
-            style: "for-the-badge"
-          - name: "Low Coverage (0%)"
-            file: "0lcov.info.sample"
-            threshold: "40"
-            style: "flat"
-          - name: "Real Project Coverage"
-            file: "real-lcov.info.sample"
-            threshold: "60"
-            style: "plastic"
-    
+          - name: 'High Coverage (100%)'
+            file: '100lcov.info.sample'
+            threshold: '80'
+            style: 'flat-square'
+          - name: 'Medium Coverage (50%)'
+            file: '50lcov.info.sample'
+            threshold: '70'
+            style: 'for-the-badge'
+          - name: 'Low Coverage (0%)'
+            file: '0lcov.info.sample'
+            threshold: '40'
+            style: 'flat'
+          - name: 'Real Project Coverage'
+            file: 'real-lcov.info.sample'
+            threshold: '60'
+            style: 'plastic'
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup test scenario
-      run: |
-        echo "Testing scenario: ${{ matrix.scenario.name }}"
-        cp test/fixtures/${{ matrix.scenario.file }} ./demo-coverage.info
-    
-    - name: Run LCovMan 🦕
-      uses: ./
-      with:
-        lcov-file: './demo-coverage.info'
-        detailed-summary: true
-        generate-badge: true
-        badge-style: ${{ matrix.scenario.style }}
-        coverage-threshold: ${{ matrix.scenario.threshold }}
-        title: ${{ matrix.scenario.name }}
-        working-directory: './'
-        
-    - name: Show results
-      run: |
-        echo "✅ Successfully tested: ${{ matrix.scenario.name }}"
-        echo "📊 Badge style: ${{ matrix.scenario.style }}"
-        echo "🎯 Threshold: ${{ matrix.scenario.threshold }}%"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup test scenario
+        run: |
+          echo "Testing scenario: ${{ matrix.scenario.name }}"
+          cp test/fixtures/${{ matrix.scenario.file }} ./demo-coverage.info
+
+      - name: Run LCovMan 🦕
+        uses: ./
+        with:
+          lcov-file: './demo-coverage.info'
+          detailed-summary: true
+          generate-badge: true
+          badge-style: ${{ matrix.scenario.style }}
+          coverage-threshold: ${{ matrix.scenario.threshold }}
+          title: ${{ matrix.scenario.name }}
+          working-directory: './'
+
+      - name: Show results
+        run: |
+          echo "✅ Successfully tested: ${{ matrix.scenario.name }}"
+          echo "📊 Badge style: ${{ matrix.scenario.style }}"
+          echo "🎯 Threshold: ${{ matrix.scenario.threshold }}%"

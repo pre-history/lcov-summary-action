@@ -7,11 +7,11 @@ const fs = require('fs');
 function parseLcov(lcov) {
   const lcovLines = lcov.split('\n');
   const files = [];
-  
+
   let totalLinesHit = 0;
   let totalLines = 0;
   let currentFile = {};
-  
+
   for (const line of lcovLines) {
     if (line.startsWith('SF:')) {
       const filename = line.substring(3).trim();
@@ -27,11 +27,18 @@ function parseLcov(lcov) {
         currentFile.total = value;
       }
     } else if (line.trim() === 'end_of_record') {
-      if (currentFile.filename && currentFile.total !== undefined && currentFile.covered !== undefined) {
-        currentFile.percentage = currentFile.total > 0 
-          ? Number(((currentFile.covered / currentFile.total) * 100).toFixed(2))
-          : 0;
-        
+      if (
+        currentFile.filename &&
+        currentFile.total !== undefined &&
+        currentFile.covered !== undefined
+      ) {
+        currentFile.percentage =
+          currentFile.total > 0
+            ? Number(
+                ((currentFile.covered / currentFile.total) * 100).toFixed(2),
+              )
+            : 0;
+
         files.push(currentFile);
         totalLinesHit += currentFile.covered;
         totalLines += currentFile.total;
@@ -39,12 +46,14 @@ function parseLcov(lcov) {
       currentFile = {};
     }
   }
-  
+
   let coveragePercentage = 0;
   if (totalLines > 0) {
-    coveragePercentage = Number(((totalLinesHit / totalLines) * 100).toFixed(2));
+    coveragePercentage = Number(
+      ((totalLinesHit / totalLines) * 100).toFixed(2),
+    );
   }
-  
+
   return {
     covered: totalLinesHit,
     not_covered: totalLines - totalLinesHit,
@@ -70,11 +79,11 @@ function generateCoverageBadge(percentage, style = 'flat') {
   if (percentage >= 80) color = 'brightgreen';
   else if (percentage >= 60) color = 'yellow';
   else if (percentage >= 40) color = 'orange';
-  
+
   const percentageText = `${percentage}%25`;
   const url = `https://img.shields.io/badge/coverage-${percentageText}-${color}?style=${style}`;
   const markdown = `![Coverage](${url})`;
-  
+
   return { url, markdown };
 }
 
@@ -85,8 +94,11 @@ console.log(`🔗 Badge URL: ${badge.url}`);
 // Show detailed file breakdown
 if (result.files.length > 0) {
   console.log('\n📂 File Breakdown:');
-  result.files.forEach(file => {
-    const status = file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
-    console.log(`  ${status} ${file.filename}: ${file.percentage}% (${file.covered}/${file.total})`);
+  result.files.forEach((file) => {
+    const status =
+      file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
+    console.log(
+      `  ${status} ${file.filename}: ${file.percentage}% (${file.covered}/${file.total})`,
+    );
   });
 }

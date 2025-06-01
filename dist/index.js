@@ -23933,7 +23933,9 @@ function parseLcov(lcov) {
       }
     } else if (line.trim() === "end_of_record") {
       if (currentFile.filename && currentFile.total !== void 0 && currentFile.covered !== void 0) {
-        currentFile.percentage = currentFile.total > 0 ? Number((currentFile.covered / currentFile.total * 100).toFixed(2)) : 0;
+        currentFile.percentage = currentFile.total > 0 ? Number(
+          (currentFile.covered / currentFile.total * 100).toFixed(2)
+        ) : 0;
         files.push(currentFile);
         totalLinesHit += currentFile.covered;
         totalLines += currentFile.total;
@@ -23951,7 +23953,9 @@ function parseLcov(lcov) {
   }
   let coveragePercentage = 0;
   if (totalLines > 0) {
-    coveragePercentage = Number((totalLinesHit / totalLines * 100).toFixed(2));
+    coveragePercentage = Number(
+      (totalLinesHit / totalLines * 100).toFixed(2)
+    );
   }
   return {
     covered: totalLinesHit,
@@ -23964,7 +23968,9 @@ function parseLcov(lcov) {
 function compareLcov(current, base) {
   if (!base) return null;
   const covered_diff = current.covered - base.covered;
-  const percentage_diff = Number((current.percentage - base.percentage).toFixed(2));
+  const percentage_diff = Number(
+    (current.percentage - base.percentage).toFixed(2)
+  );
   const baseFileMap = new Map(base.files.map((f) => [f.filename, f]));
   const currentFileMap = new Map(current.files.map((f) => [f.filename, f]));
   const files_changed = [];
@@ -23978,7 +23984,9 @@ function compareLcov(current, base) {
           filename: currentFile.filename,
           base_coverage: baseFile.percentage,
           current_coverage: currentFile.percentage,
-          coverage_diff: Number((currentFile.percentage - baseFile.percentage).toFixed(2)),
+          coverage_diff: Number(
+            (currentFile.percentage - baseFile.percentage).toFixed(2)
+          ),
           lines_diff: currentFile.covered - baseFile.covered
         });
       }
@@ -24207,7 +24215,9 @@ async function main() {
     secondary_color: inputs.secondary_color
   });
   const context2 = github.context;
-  if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(github.context.payload.action || "") && inputs.commentPr) {
+  if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(
+    github.context.payload.action || ""
+  ) && inputs.commentPr) {
     const pull_request_number = context2.payload.pull_request.number;
     const octokit = new github.getOctokit(inputs.githubToken);
     const comments = await octokit.rest.issues.listComments({
@@ -24238,11 +24248,15 @@ async function main() {
   const failureReasons = [];
   if (result.percentage < inputs.coverageThreshold) {
     shouldFail = true;
-    failureReasons.push(`Coverage ${result.percentage}% is below threshold ${inputs.coverageThreshold}%`);
+    failureReasons.push(
+      `Coverage ${result.percentage}% is below threshold ${inputs.coverageThreshold}%`
+    );
   }
   if (inputs.failOnDecrease && diff && diff.percentage_diff < 0) {
     shouldFail = true;
-    failureReasons.push(`Coverage decreased by ${Math.abs(diff.percentage_diff)}%`);
+    failureReasons.push(
+      `Coverage decreased by ${Math.abs(diff.percentage_diff)}%`
+    );
   }
   if (shouldFail) {
     const errorMessage = `\u274C Coverage check failed: ${failureReasons.join(", ")}`;
@@ -24251,19 +24265,23 @@ async function main() {
   } else {
     const threshold = inputs.coverageThreshold;
     const status = result.percentage >= threshold ? "\u2705" : "\u26A0\uFE0F";
-    console.log(`${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`);
+    console.log(
+      `${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`
+    );
   }
   if (inputs.generateBadge) {
     const badge = generateCoverageBadge(result.percentage, inputs.badgeStyle);
     core.info(`Coverage Badge URL: ${badge.url}`);
     core.info(`Coverage Badge Markdown: ${badge.markdown}`);
-    core.summary.addHeading("Coverage Badge", 3).addRaw(`Copy this to your README.md:
+    core.summary.addHeading("Coverage Badge", 3).addRaw(
+      `Copy this to your README.md:
 
 \`\`\`markdown
 ${badge.markdown}
 \`\`\`
 
-`).addRaw(`Preview: ${badge.markdown}
+`
+    ).addRaw(`Preview: ${badge.markdown}
 
 `);
   }
@@ -24282,12 +24300,25 @@ ${badge.markdown}
     ["Total Uncovered", result.not_covered.toString()],
     ["Coverage Percentage", `${result.percentage}%`],
     ["Coverage Threshold", `${inputs.coverageThreshold}%`],
-    ["Threshold Status", result.percentage >= inputs.coverageThreshold ? "\u2705 Pass" : "\u274C Fail"],
+    [
+      "Threshold Status",
+      result.percentage >= inputs.coverageThreshold ? "\u2705 Pass" : "\u274C Fail"
+    ],
     ["Files Analyzed", result.total_files.toString()]
   ]).addRaw("", true).addRaw(summary2).write();
 }
 function isValidHexColor(color) {
   return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+}
+function isValidBadgeStyle(style) {
+  const validStyles = [
+    "flat",
+    "flat-square",
+    "plastic",
+    "for-the-badge",
+    "social"
+  ];
+  return validStyles.includes(style);
 }
 function generateCoverageBadge(percentage, style = "flat") {
   let color = "red";
@@ -24309,20 +24340,28 @@ function getInputs() {
   const primaryColor = getInputValue("pie-covered-color") || "#4CAF50";
   const secondaryColor = getInputValue("pie-not-covered-color") || "#FF5733";
   if (primaryColor && !isValidHexColor(primaryColor)) {
-    core.warning(`Invalid primary color '${primaryColor}', using default #4CAF50`);
+    core.warning(
+      `Invalid primary color '${primaryColor}', using default #4CAF50`
+    );
   }
   if (secondaryColor && !isValidHexColor(secondaryColor)) {
-    core.warning(`Invalid secondary color '${secondaryColor}', using default #FF5733`);
+    core.warning(
+      `Invalid secondary color '${secondaryColor}', using default #FF5733`
+    );
   }
   const maxFilesInput = getInputValue("max-files-shown");
   const maxFilesShown = maxFilesInput ? parseInt(maxFilesInput, 10) : 10;
   if (isNaN(maxFilesShown) || maxFilesShown < 1) {
-    core.warning(`Invalid max-files-shown '${maxFilesInput}', using default 10`);
+    core.warning(
+      `Invalid max-files-shown '${maxFilesInput}', using default 10`
+    );
   }
   const thresholdInput = getInputValue("coverage-threshold");
   const coverageThreshold = thresholdInput ? parseFloat(thresholdInput) : 70;
   if (isNaN(coverageThreshold) || coverageThreshold < 0 || coverageThreshold > 100) {
-    core.warning(`Invalid coverage-threshold '${thresholdInput}', using default 70`);
+    core.warning(
+      `Invalid coverage-threshold '${thresholdInput}', using default 70`
+    );
   }
   return {
     githubToken: getInputValue("github-token"),
@@ -24339,7 +24378,16 @@ function getInputs() {
     coverageThreshold: !isNaN(coverageThreshold) && coverageThreshold >= 0 && coverageThreshold <= 100 ? coverageThreshold : 70,
     failOnDecrease: getInputBoolValue("fail-on-coverage-decrease"),
     generateBadge: getInputBoolValue("generate-badge"),
-    badgeStyle: getInputValue("badge-style") || "flat"
+    badgeStyle: (() => {
+      const style = getInputValue("badge-style") || "flat";
+      if (!isValidBadgeStyle(style)) {
+        core.warning(
+          `Invalid badge-style '${style}', using default 'flat'. Valid styles: flat, flat-square, plastic, for-the-badge, social`
+        );
+        return "flat";
+      }
+      return style;
+    })()
   };
 }
 function getInputFilePath(inputName, defaultValue) {

@@ -46,7 +46,8 @@ export function generateDetailedSummary(
 
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? '✅' : '❌';
-  const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
+  const thresholdText =
+    threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
   let summary = `## 📊 ${title}
 
@@ -67,7 +68,7 @@ title ${title}
   if (diff) {
     const diffSign = diff.percentage_diff >= 0 ? '+' : '';
     const diffEmoji = diff.percentage_diff >= 0 ? '📈' : '📉';
-    
+
     summary += `
 ### Coverage Changes ${diffEmoji}
 - **${diffSign}${diff.percentage_diff}%** coverage change
@@ -80,12 +81,12 @@ title ${title}
 | File | Base | Current | Change |
 |------|------|---------|--------|
 `;
-      diff.files_changed.slice(0, maxFiles).forEach(file => {
+      diff.files_changed.slice(0, maxFiles).forEach((file) => {
         const changeEmoji = file.coverage_diff >= 0 ? '✅' : '❌';
         const changeSign = file.coverage_diff >= 0 ? '+' : '';
         summary += `| \`${file.filename}\` | ${file.base_coverage}% | ${file.current_coverage}% | ${changeEmoji} ${changeSign}${file.coverage_diff}% |\n`;
       });
-      
+
       if (diff.files_changed.length > maxFiles) {
         summary += `\n*... and ${diff.files_changed.length - maxFiles} more files*\n`;
       }
@@ -97,11 +98,12 @@ title ${title}
 | File | Coverage |
 |------|----------|
 `;
-      diff.new_files.slice(0, maxFiles).forEach(file => {
-        const coverageEmoji = file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
+      diff.new_files.slice(0, maxFiles).forEach((file) => {
+        const coverageEmoji =
+          file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
         summary += `| \`${file.filename}\` | ${coverageEmoji} ${file.percentage}% |\n`;
       });
-      
+
       if (diff.new_files.length > maxFiles) {
         summary += `\n*... and ${diff.new_files.length - maxFiles} more files*\n`;
       }
@@ -111,10 +113,10 @@ title ${title}
     if (diff.removed_files.length > 0) {
       summary += `### Removed Files (${diff.removed_files.length})
 `;
-      diff.removed_files.slice(0, maxFiles).forEach(file => {
+      diff.removed_files.slice(0, maxFiles).forEach((file) => {
         summary += `- \`${file.filename}\` (was ${file.percentage}%)\n`;
       });
-      
+
       if (diff.removed_files.length > maxFiles) {
         summary += `\n*... and ${diff.removed_files.length - maxFiles} more files*\n`;
       }
@@ -126,19 +128,19 @@ title ${title}
   if (showFiles && result.files.length > 0) {
     // Show files with low coverage first
     const lowCoverageFiles = result.files
-      .filter(f => f.percentage < 80)
+      .filter((f) => f.percentage < 80)
       .sort((a, b) => a.percentage - b.percentage);
-    
+
     if (lowCoverageFiles.length > 0) {
       summary += `### Files with Low Coverage (< 80%)
 | File | Coverage | Lines |
 |------|----------|-------|
 `;
-      lowCoverageFiles.slice(0, maxFiles).forEach(file => {
+      lowCoverageFiles.slice(0, maxFiles).forEach((file) => {
         const coverageEmoji = file.percentage >= 50 ? '⚠️' : '❌';
         summary += `| \`${file.filename}\` | ${coverageEmoji} ${file.percentage}% | ${file.covered}/${file.total} |\n`;
       });
-      
+
       if (lowCoverageFiles.length > maxFiles) {
         summary += `\n*... and ${lowCoverageFiles.length - maxFiles} more files*\n`;
       }
@@ -147,16 +149,16 @@ title ${title}
 
     // Show top performing files
     const topFiles = result.files
-      .filter(f => f.percentage >= 80)
+      .filter((f) => f.percentage >= 80)
       .sort((a, b) => b.percentage - a.percentage)
       .slice(0, 5);
-    
+
     if (topFiles.length > 0) {
       summary += `### Top Performing Files ✨
 | File | Coverage | Lines |
 |------|----------|-------|
 `;
-      topFiles.forEach(file => {
+      topFiles.forEach((file) => {
         summary += `| \`${file.filename}\` | ✅ ${file.percentage}% | ${file.covered}/${file.total} |\n`;
       });
       summary += '\n';
@@ -170,11 +172,11 @@ title ${title}
     if (result.percentage >= 80) badgeColor = 'brightgreen';
     else if (result.percentage >= 60) badgeColor = 'yellow';
     else if (result.percentage >= 40) badgeColor = 'orange';
-    
+
     const percentageText = `${result.percentage}%25`;
     const badgeUrl = `https://img.shields.io/badge/coverage-${percentageText}-${badgeColor}?style=${badgeStyle}`;
     const badgeMarkdown = `![Coverage](${badgeUrl})`;
-    
+
     summary += `### Coverage Badge 📊
 Copy this to your README.md:
 \`\`\`markdown
