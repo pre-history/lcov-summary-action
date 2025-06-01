@@ -38,17 +38,17 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
 
 ## Inputs
 
-| Input Name              | Description                                                           | Required | Default Value          |
-| ----------------------- | --------------------------------------------------------------------- | -------- | ---------------------- |
-| `github-token`          | GitHub token                                                          | NO       | `${{ github.token }}`  |
-| `title`                 | Summary title                                                         | No       | -                      |
-| `lcov-file`             | Path to LCOV file                                                     | No       | `./coverage/lcov.info` |
-| `comment-on-pr`         | Add diagram comment to the current PR [Need Permission](#permissions) | No       | `false`                |
-| `working-directory`     | Set working directory if project is not in root folder                | No       | `./`                   |
-| `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
-| `pie-not-covered-color` | Color for pie chart not covered part                                  | No       | `#FF5733`              |
-| `show-coverage-sprite`  | Show coverage sprite icon in PR comments                              | No       | `false`                |
-| `show-coverage-feedback` | Show randomized coverage feedback messages (147 unique roasts/encouragements) | No | `false` |
+| Input Name               | Description                                                                   | Required | Default Value          |
+| ------------------------ | ----------------------------------------------------------------------------- | -------- | ---------------------- |
+| `github-token`           | GitHub token                                                                  | NO       | `${{ github.token }}`  |
+| `title`                  | Summary title                                                                 | No       | -                      |
+| `lcov-file`              | Path to LCOV file                                                             | No       | `./coverage/lcov.info` |
+| `comment-on-pr`          | Add diagram comment to the current PR [Need Permission](#permissions)         | No       | `false`                |
+| `working-directory`      | Set working directory if project is not in root folder                        | No       | `./`                   |
+| `pie-covered-color`      | Color for pie chart covered part                                              | No       | `#4CAF50`              |
+| `pie-not-covered-color`  | Color for pie chart not covered part                                          | No       | `#FF5733`              |
+| `show-coverage-sprite`   | Show coverage sprite icon in PR comments                                      | No       | `false`                |
+| `show-coverage-feedback` | Show randomized coverage feedback messages (147 unique roasts/encouragements) | No       | `false`                |
 
 ## Permissions
 

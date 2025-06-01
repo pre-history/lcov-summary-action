@@ -1,6 +1,8 @@
 import { ParseLcov, FileCoverage, CoverageDiff } from './lcov_parser';
-import { generateCoverageSpriteWithFeedback, getCoverageFeedbackMessage } from './feedback';
-
+import {
+  generateCoverageSpriteWithFeedback,
+  getCoverageFeedbackMessage,
+} from './feedback';
 
 interface Options {
   title?: string;
@@ -28,7 +30,11 @@ export function generateSummary(
   const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSpriteWithFeedback(percentage, options?.github_context, options?.show_coverage_feedback)
+    ? generateCoverageSpriteWithFeedback(
+        percentage,
+        options?.github_context,
+        options?.show_coverage_feedback,
+      )
     : '';
 
   return `## ${spriteHtml}📊 ${title}
@@ -62,7 +68,11 @@ export function generateDetailedSummary(
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSpriteWithFeedback(result.percentage, options?.github_context, options?.show_coverage_feedback)
+    ? generateCoverageSpriteWithFeedback(
+        result.percentage,
+        options?.github_context,
+        options?.show_coverage_feedback,
+      )
     : '';
 
   let summary = `## ${spriteHtml}📊 ${title}
