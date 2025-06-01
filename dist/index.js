@@ -24220,7 +24220,12 @@ async function main() {
   console.log("- Action:", context2.payload.action);
   console.log("- Has PR payload:", !!context2.payload.pull_request);
   console.log("- Comment PR enabled:", inputs.commentPr);
-  console.log("- Valid actions:", ["opened", "synchronize", "reopened"].includes(context2.payload.action || ""));
+  console.log(
+    "- Valid actions:",
+    ["opened", "synchronize", "reopened"].includes(
+      context2.payload.action || ""
+    )
+  );
   if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(
     github.context.payload.action || ""
   ) && inputs.commentPr) {
