@@ -24232,7 +24232,7 @@ async function main() {
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      ref: github.context.ref
+      ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
     }
   }) : generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
@@ -24242,7 +24242,7 @@ async function main() {
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      ref: github.context.ref
+      ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
     }
   });
   const context2 = github.context;
