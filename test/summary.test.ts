@@ -85,10 +85,7 @@ describe('integration tests', () => {
       summary.includes('Coverage Badge'),
       'Should contain badge section',
     );
-    assert.ok(
-      summary.includes('Copy this to your README.md'),
-      'Should contain badge instructions',
-    );
+    assert.ok(summary.includes('![Coverage]'), 'Should contain badge markdown');
     assert.ok(summary.includes('50%'), 'Should contain coverage percentage');
     assert.ok(
       summary.includes('Threshold: ❌ 70%'),
