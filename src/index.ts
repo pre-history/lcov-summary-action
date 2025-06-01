@@ -100,6 +100,8 @@ async function main() {
   console.log('- Action:', context.payload.action);
   console.log('- Has PR payload:', !!context.payload.pull_request);
   console.log('- Comment PR enabled:', inputs.commentPr);
+  console.log('- Detailed summary enabled:', inputs.detailedSummary);
+  console.log('- Show coverage sprite enabled:', inputs.showCoverageSprite);
   console.log('- Original ref:', context.ref);
   console.log('- PR head ref:', context.payload.pull_request?.head?.ref);
   console.log(
