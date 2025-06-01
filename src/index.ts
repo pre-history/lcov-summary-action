@@ -19,6 +19,9 @@ const WORKING_DIR = core.getInput('working-directory');
  */
 async function main() {
   const inputs = getInputs();
+
+  // Debug all inputs
+  console.log('🔍 Debug: All inputs object:', JSON.stringify(inputs, null, 2));
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     await core.summary
@@ -59,6 +62,13 @@ async function main() {
   }
 
   // Generate summary based on detailed mode
+  console.log('🔍 Debug: inputs.detailedSummary =', inputs.detailedSummary);
+  console.log(
+    '🔍 Debug: typeof inputs.detailedSummary =',
+    typeof inputs.detailedSummary,
+  );
+  console.log('🔍 Debug: Will use detailed summary?', !!inputs.detailedSummary);
+
   const summary = inputs.detailedSummary
     ? generateDetailedSummary(result, diff, {
         title: inputs.title,
@@ -78,7 +88,8 @@ async function main() {
               : github.context.ref,
         },
       })
-    : generateSummary(result.covered, result.not_covered, {
+    : (console.log('🔍 Debug: Using simple generateSummary()'),
+      generateSummary(result.covered, result.not_covered, {
         title: inputs.title,
         primary_color: inputs.primary_color,
         secondary_color: inputs.secondary_color,
@@ -91,7 +102,7 @@ async function main() {
               ? github.context.payload.pull_request?.head?.ref || 'master'
               : github.context.ref,
         },
-      });
+      }));
   const context = github.context;
 
   // Debug logging for PR comment functionality

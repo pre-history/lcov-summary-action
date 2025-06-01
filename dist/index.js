@@ -24187,6 +24187,7 @@ ${badgeMarkdown}
 var WORKING_DIR = core.getInput("working-directory");
 async function main() {
   const inputs = getInputs();
+  console.log("\u{1F50D} Debug: All inputs object:", JSON.stringify(inputs, null, 2));
   const rawCoverageReport = readFileSafe(inputs.lcovFile);
   if (!rawCoverageReport) {
     await core.summary.addTable([
@@ -24220,6 +24221,12 @@ async function main() {
       core.warning(`Base LCOV file not found at '${inputs.baseLcovFile}'`);
     }
   }
+  console.log("\u{1F50D} Debug: inputs.detailedSummary =", inputs.detailedSummary);
+  console.log(
+    "\u{1F50D} Debug: typeof inputs.detailedSummary =",
+    typeof inputs.detailedSummary
+  );
+  console.log("\u{1F50D} Debug: Will use detailed summary?", !!inputs.detailedSummary);
   const summary2 = inputs.detailedSummary ? generateDetailedSummary(result, diff, {
     title: inputs.title,
     primary_color: inputs.primary_color,
@@ -24234,7 +24241,7 @@ async function main() {
       repo: github.context.repo.repo,
       ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
     }
-  }) : generateSummary(result.covered, result.not_covered, {
+  }) : (console.log("\u{1F50D} Debug: Using simple generateSummary()"), generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
@@ -24244,7 +24251,7 @@ async function main() {
       repo: github.context.repo.repo,
       ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
     }
-  });
+  }));
   const context2 = github.context;
   console.log("\u{1F50D} Debug: PR Comment Analysis");
   console.log("- Event name:", context2.eventName);
