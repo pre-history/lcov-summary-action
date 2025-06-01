@@ -69,6 +69,7 @@ async function main() {
         generate_badge: inputs.generateBadge,
         badge_style: inputs.badgeStyle,
         show_coverage_sprite: inputs.showCoverageSprite,
+        show_coverage_feedback: inputs.showCoverageFeedback,
         github_context: {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
@@ -83,6 +84,7 @@ async function main() {
         primary_color: inputs.primary_color,
         secondary_color: inputs.secondary_color,
         show_coverage_sprite: inputs.showCoverageSprite,
+        show_coverage_feedback: inputs.showCoverageFeedback,
         github_context: {
           owner: github.context.repo.owner,
           repo: github.context.repo.repo,
@@ -310,6 +312,7 @@ export function getInputs(): {
   generateBadge: boolean;
   badgeStyle: string;
   showCoverageSprite: boolean;
+  showCoverageFeedback: boolean;
 } {
   const lcovFile = getInputFilePath(
     core.getInput('lcov-file'),
@@ -389,6 +392,7 @@ export function getInputs(): {
       return style;
     })(),
     showCoverageSprite: getInputBoolValue('show-coverage-sprite'),
+    showCoverageFeedback: getInputBoolValue('show-coverage-feedback'),
   };
 }
 /**

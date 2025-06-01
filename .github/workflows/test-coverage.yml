@@ -44,6 +44,7 @@ jobs:
           title: 'LCovMan Self-Test Coverage 🦕 (Updated!)'
           working-directory: './'
           show-coverage-sprite: true
+          show-coverage-feedback: true
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4

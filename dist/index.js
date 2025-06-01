@@ -24008,34 +24008,119 @@ function compareLcov(current, base) {
   };
 }
 
-// src/summary.ts
-function getCoverageSprite(percentage) {
-  if (percentage === 0) return "0.png";
-  if (percentage < 15) return "10.png";
-  if (percentage < 35) return "30.png";
-  if (percentage < 45) return "40.png";
-  if (percentage < 55) return "50.png";
-  if (percentage < 65) return "60.png";
-  if (percentage < 75) return "70.png";
-  if (percentage < 85) return "80.png";
-  if (percentage < 95) return "90.png";
-  return "100.png";
+// src/feedback.ts
+var FEEDBACK_RANGES = [
+  {
+    min: 0,
+    max: 0,
+    sprites: ["0.png"],
+    messages: [
+      "\u{1F480} Your code coverage is deader than a doornail! Time to write some tests!",
+      "\u{1F525} 0% coverage? That's not testing, that's just wishful thinking!",
+      "\u{1F631} No tests detected. Your code is running naked in production!"
+    ]
+  },
+  {
+    min: 1,
+    max: 19,
+    sprites: ["10.png"],
+    messages: [
+      "\u{1F926}\u200D\u2642\uFE0F Single digit coverage? Come on, you can do better than this!",
+      "\u{1F62C} Your tests are as rare as unicorns. Write more!",
+      "\u{1F6A8} This coverage level is giving me anxiety. Please test more!"
+    ]
+  },
+  {
+    min: 20,
+    max: 39,
+    sprites: ["30.png"],
+    messages: [
+      "\u{1F615} Getting warmer, but still pretty chilly in here. More tests needed!",
+      "\u{1F321}\uFE0F Your coverage is like lukewarm coffee - not quite there yet.",
+      "\u{1F4C8} Progress! But let's keep climbing that coverage mountain."
+    ]
+  },
+  {
+    min: 40,
+    max: 59,
+    sprites: ["40.png", "50.png"],
+    messages: [
+      "\u{1F914} Half-way there! Your code is 50% protected, 50% vulnerable.",
+      "\u2696\uFE0F Balanced, as all things should be... but let's tip the scales toward more tests!",
+      "\u{1F3AF} You're in the zone! Keep pushing toward better coverage."
+    ]
+  },
+  {
+    min: 60,
+    max: 79,
+    sprites: ["60.png", "70.png"],
+    messages: [
+      "\u{1F44D} Not bad! Your code is feeling more confident with each test.",
+      "\u{1F680} Good coverage! You're building trust with every test case.",
+      "\u{1F4AA} Strong coverage game! Your future self will thank you."
+    ]
+  },
+  {
+    min: 80,
+    max: 94,
+    sprites: ["80.png", "90.png"],
+    messages: [
+      "\u{1F389} Excellent coverage! Your code is well-protected and battle-tested.",
+      "\u2B50 Outstanding! You're setting a great example for test-driven development.",
+      "\u{1F3C6} High-quality coverage! Your code confidence level is through the roof!"
+    ]
+  },
+  {
+    min: 95,
+    max: 100,
+    sprites: ["100.png"],
+    messages: [
+      "\u{1F947} LEGENDARY! Your code coverage is absolutely pristine!",
+      "\u{1F451} Coverage royalty! You've achieved testing nirvana.",
+      "\u{1F680} To infinity and beyond! Perfect coverage achieved, you testing wizard!"
+    ]
+  }
+];
+function getCoverageFeedback(percentage, githubContext) {
+  const range = FEEDBACK_RANGES.find((r) => percentage >= r.min && percentage <= r.max);
+  if (!range) {
+    return {
+      sprite: generateSpriteUrl("50.png", githubContext),
+      message: "\u{1F916} Coverage data processed! Keep up the good work!"
+    };
+  }
+  const randomSprite = range.sprites[Math.floor(Math.random() * range.sprites.length)];
+  const randomMessage = range.messages[Math.floor(Math.random() * range.messages.length)];
+  return {
+    sprite: generateSpriteUrl(randomSprite, githubContext),
+    message: randomMessage
+  };
 }
-function generateCoverageSprite(percentage, githubContext) {
-  const sprite = getCoverageSprite(percentage);
+function generateSpriteUrl(spriteFile, githubContext) {
   const owner = githubContext?.owner || "seuros";
   const repo = githubContext?.repo || "lcov-summary-action";
   const ref = githubContext?.ref || "master";
-  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${sprite}`;
-  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${spriteFile}`;
 }
+function generateCoverageSpriteWithFeedback(percentage, githubContext, includeFeedback = false) {
+  const feedback = getCoverageFeedback(percentage, githubContext);
+  const sprite = `<img src="${feedback.sprite}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+  if (includeFeedback) {
+    return `${sprite}
+
+> ${feedback.message}`;
+  }
+  return sprite;
+}
+
+// src/summary.ts
 function generateSummary(covered, not_covered, options) {
   const primary = options?.primary_color || "#4CAF50";
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(percentage, options?.github_context) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(percentage, options?.github_context, options?.show_coverage_feedback) : "";
   return `## ${spriteHtml}\u{1F4CA} ${title}
 
 \`\`\`mermaid
@@ -24058,7 +24143,7 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(result.percentage, options?.github_context) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(result.percentage, options?.github_context, options?.show_coverage_feedback) : "";
   let summary2 = `## ${spriteHtml}\u{1F4CA} ${title}
 
 ### Overall Coverage
@@ -24229,6 +24314,7 @@ async function main() {
     generate_badge: inputs.generateBadge,
     badge_style: inputs.badgeStyle,
     show_coverage_sprite: inputs.showCoverageSprite,
+    show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -24239,6 +24325,7 @@ async function main() {
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
     show_coverage_sprite: inputs.showCoverageSprite,
+    show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -24455,7 +24542,8 @@ function getInputs() {
       }
       return style;
     })(),
-    showCoverageSprite: getInputBoolValue("show-coverage-sprite")
+    showCoverageSprite: getInputBoolValue("show-coverage-sprite"),
+    showCoverageFeedback: getInputBoolValue("show-coverage-feedback")
   };
 }
 function getInputFilePath(inputName, defaultValue) {
