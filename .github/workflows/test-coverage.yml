@@ -33,7 +33,7 @@ jobs:
         run: bun run coverage
 
       - name: Test LCovMan on itself 🦕
-        uses: ./
+        uses: pre-history/lcov-summary-action@9d394c36e34d8336bae4782958329afc2a519ad0
         with:
           lcov-file: './coverage/lcov.info'
           detailed-summary: true
