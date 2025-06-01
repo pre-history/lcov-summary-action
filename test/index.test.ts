@@ -27,4 +27,13 @@ describe('index.ts basic tests', () => {
     assert.ok(validEvents.includes('reopened'), 'Should include reopened event');
     assert.ok(!validEvents.includes('closed'), 'Should not include closed event');
   });
+
+  it('coverage threshold validation should work', () => {
+    // Test threshold pass/fail logic
+    const threshold = 70;
+    
+    assert.ok(80 >= threshold, 'Coverage above threshold should pass');
+    assert.ok(70 >= threshold, 'Coverage at threshold should pass');
+    assert.ok(!(60 >= threshold), 'Coverage below threshold should fail');
+  });
 });

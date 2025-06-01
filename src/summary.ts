@@ -6,6 +6,7 @@ interface Options {
   secondary_color?: string;
   show_files?: boolean;
   max_files_shown?: number;
+  coverage_threshold?: number;
 }
 
 export function generateSummary(
@@ -41,10 +42,14 @@ export function generateDetailedSummary(
   const showFiles = options?.show_files !== false;
   const maxFiles = options?.max_files_shown || 10;
 
+  const threshold = options?.coverage_threshold || 0;
+  const thresholdStatus = result.percentage >= threshold ? '✅' : '❌';
+  const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
+
   let summary = `## 📊 ${title}
 
 ### Overall Coverage
-- **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)
+- **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)${thresholdText}
 - **${result.total_files}** files analyzed
 
 \`\`\`mermaid

@@ -24024,10 +24024,13 @@ function generateDetailedSummary(result, diff, options) {
   const title = options?.title || "Project Coverage";
   const showFiles = options?.show_files !== false;
   const maxFiles = options?.max_files_shown || 10;
+  const threshold = options?.coverage_threshold || 0;
+  const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
+  const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
   let summary2 = `## \u{1F4CA} ${title}
 
 ### Overall Coverage
-- **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)
+- **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)${thresholdText}
 - **${result.total_files}** files analyzed
 
 \`\`\`mermaid
@@ -24175,7 +24178,8 @@ async function main() {
     title: inputs.title,
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
-    max_files_shown: inputs.maxFilesShown
+    max_files_shown: inputs.maxFilesShown,
+    coverage_threshold: inputs.coverageThreshold
   }) : generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
@@ -24209,6 +24213,25 @@ async function main() {
       });
     }
   }
+  let shouldFail = false;
+  const failureReasons = [];
+  if (result.percentage < inputs.coverageThreshold) {
+    shouldFail = true;
+    failureReasons.push(`Coverage ${result.percentage}% is below threshold ${inputs.coverageThreshold}%`);
+  }
+  if (inputs.failOnDecrease && diff && diff.percentage_diff < 0) {
+    shouldFail = true;
+    failureReasons.push(`Coverage decreased by ${Math.abs(diff.percentage_diff)}%`);
+  }
+  if (shouldFail) {
+    const errorMessage = `\u274C Coverage check failed: ${failureReasons.join(", ")}`;
+    core.setFailed(errorMessage);
+    console.error(errorMessage);
+  } else {
+    const threshold = inputs.coverageThreshold;
+    const status = result.percentage >= threshold ? "\u2705" : "\u26A0\uFE0F";
+    console.log(`${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`);
+  }
   await core.summary.addTable([
     [
       { data: "Details", header: true },
@@ -24223,6 +24246,8 @@ async function main() {
     ["Total Covered", result.covered.toString()],
     ["Total Uncovered", result.not_covered.toString()],
     ["Coverage Percentage", `${result.percentage}%`],
+    ["Coverage Threshold", `${inputs.coverageThreshold}%`],
+    ["Threshold Status", result.percentage >= inputs.coverageThreshold ? "\u2705 Pass" : "\u274C Fail"],
     ["Files Analyzed", result.total_files.toString()]
   ]).addRaw("", true).addRaw(summary2).write();
 }
@@ -24249,6 +24274,11 @@ function getInputs() {
   if (isNaN(maxFilesShown) || maxFilesShown < 1) {
     core.warning(`Invalid max-files-shown '${maxFilesInput}', using default 10`);
   }
+  const thresholdInput = getInputValue("coverage-threshold");
+  const coverageThreshold = thresholdInput ? parseFloat(thresholdInput) : 70;
+  if (isNaN(coverageThreshold) || coverageThreshold < 0 || coverageThreshold > 100) {
+    core.warning(`Invalid coverage-threshold '${thresholdInput}', using default 70`);
+  }
   return {
     githubToken: getInputValue("github-token"),
     workingDir: WORKING_DIR,
@@ -24260,7 +24290,9 @@ function getInputs() {
     secondary_color: isValidHexColor(secondaryColor) ? secondaryColor : "#FF5733",
     debugLcov: getInputBoolValue("debug-lcov"),
     detailedSummary: getInputBoolValue("detailed-summary"),
-    maxFilesShown: !isNaN(maxFilesShown) && maxFilesShown >= 1 ? maxFilesShown : 10
+    maxFilesShown: !isNaN(maxFilesShown) && maxFilesShown >= 1 ? maxFilesShown : 10,
+    coverageThreshold: !isNaN(coverageThreshold) && coverageThreshold >= 0 && coverageThreshold <= 100 ? coverageThreshold : 70,
+    failOnDecrease: getInputBoolValue("fail-on-coverage-decrease")
   };
 }
 function getInputFilePath(inputName, defaultValue) {

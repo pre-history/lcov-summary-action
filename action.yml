@@ -46,6 +46,14 @@ inputs:
     description: Maximum number of files to show in detailed reports
     required: false
     default: '10'
+  coverage-threshold:
+    description: Minimum coverage percentage required (action fails if below)
+    required: false
+    default: '70'
+  fail-on-coverage-decrease:
+    description: Fail if coverage decreases compared to base
+    required: false
+    default: 'false'
 runs:
   using: 'node20'
   main: 'dist/index.js'
