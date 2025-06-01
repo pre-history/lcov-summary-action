@@ -1,0 +1,54 @@
+name: Test Coverage with LCovMan
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build project
+        run: bun run build
+
+      - name: Run tests with coverage
+        run: bun run coverage
+
+      - name: Test LCovMan on itself 🦕
+        uses: ./
+        with:
+          lcov-file: './coverage/lcov.info'
+          detailed-summary: true
+          generate-badge: true
+          badge-style: 'for-the-badge'
+          comment-on-pr: true
+          coverage-threshold: '0' # 0% because our tests are unit tests, not integration tests
+          title: 'LCovMan Self-Test Coverage 🦕 (Updated!)'
+          working-directory: './'
+          show-coverage-sprite: true
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            coverage/
+            !coverage/node_modules

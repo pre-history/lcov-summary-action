@@ -1,5 +1,40 @@
 import { ParseLcov, FileCoverage, CoverageDiff } from './lcov_parser';
 
+/**
+ * Selects the appropriate sprite based on coverage percentage
+ */
+function getCoverageSprite(percentage: number): string {
+  // Round to nearest 10% but handle special cases
+  if (percentage === 0) return '0.png';
+  if (percentage < 15) return '10.png';
+  if (percentage < 35) return '30.png';
+  if (percentage < 45) return '40.png';
+  if (percentage < 55) return '50.png';
+  if (percentage < 65) return '60.png';
+  if (percentage < 75) return '70.png';
+  if (percentage < 85) return '80.png';
+  if (percentage < 95) return '90.png';
+  return '100.png';
+}
+
+/**
+ * Generates coverage sprite markdown
+ */
+function generateCoverageSprite(
+  percentage: number,
+  githubContext?: { owner: string; repo: string; ref: string },
+): string {
+  const sprite = getCoverageSprite(percentage);
+
+  // Use current repo and branch context if available, fallback to master
+  const owner = githubContext?.owner || 'seuros';
+  const repo = githubContext?.repo || 'lcov-summary-action';
+  const ref = githubContext?.ref || 'master';
+
+  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/icons/${sprite}`;
+  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+}
+
 interface Options {
   title?: string;
   primary_color?: string;
@@ -7,6 +42,10 @@ interface Options {
   show_files?: boolean;
   max_files_shown?: number;
   coverage_threshold?: number;
+  generate_badge?: boolean;
+  badge_style?: string;
+  show_coverage_sprite?: boolean;
+  github_context?: { owner: string; repo: string; ref: string };
 }
 
 export function generateSummary(
@@ -17,7 +56,14 @@ export function generateSummary(
   const primary = options?.primary_color || '#4CAF50';
   const secondary = options?.secondary_color || '#FF5733';
   const title = options?.title || 'Project Coverage';
-  return `## 📊 ${title}
+  const total = covered + not_covered;
+  const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
+
+  const spriteHtml = options?.show_coverage_sprite
+    ? generateCoverageSprite(percentage, options?.github_context)
+    : '';
+
+  return `## ${spriteHtml}📊 ${title}
 
 \`\`\`mermaid
   %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
@@ -44,9 +90,14 @@ export function generateDetailedSummary(
 
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? '✅' : '❌';
-  const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
+  const thresholdText =
+    threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
-  let summary = `## 📊 ${title}
+  const spriteHtml = options?.show_coverage_sprite
+    ? generateCoverageSprite(result.percentage, options?.github_context)
+    : '';
+
+  let summary = `## ${spriteHtml}📊 ${title}
 
 ### Overall Coverage
 - **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)${thresholdText}
@@ -65,7 +116,7 @@ title ${title}
   if (diff) {
     const diffSign = diff.percentage_diff >= 0 ? '+' : '';
     const diffEmoji = diff.percentage_diff >= 0 ? '📈' : '📉';
-    
+
     summary += `
 ### Coverage Changes ${diffEmoji}
 - **${diffSign}${diff.percentage_diff}%** coverage change
@@ -78,12 +129,12 @@ title ${title}
 | File | Base | Current | Change |
 |------|------|---------|--------|
 `;
-      diff.files_changed.slice(0, maxFiles).forEach(file => {
+      diff.files_changed.slice(0, maxFiles).forEach((file) => {
         const changeEmoji = file.coverage_diff >= 0 ? '✅' : '❌';
         const changeSign = file.coverage_diff >= 0 ? '+' : '';
         summary += `| \`${file.filename}\` | ${file.base_coverage}% | ${file.current_coverage}% | ${changeEmoji} ${changeSign}${file.coverage_diff}% |\n`;
       });
-      
+
       if (diff.files_changed.length > maxFiles) {
         summary += `\n*... and ${diff.files_changed.length - maxFiles} more files*\n`;
       }
@@ -95,11 +146,12 @@ title ${title}
 | File | Coverage |
 |------|----------|
 `;
-      diff.new_files.slice(0, maxFiles).forEach(file => {
-        const coverageEmoji = file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
+      diff.new_files.slice(0, maxFiles).forEach((file) => {
+        const coverageEmoji =
+          file.percentage >= 80 ? '✅' : file.percentage >= 50 ? '⚠️' : '❌';
         summary += `| \`${file.filename}\` | ${coverageEmoji} ${file.percentage}% |\n`;
       });
-      
+
       if (diff.new_files.length > maxFiles) {
         summary += `\n*... and ${diff.new_files.length - maxFiles} more files*\n`;
       }
@@ -109,10 +161,10 @@ title ${title}
     if (diff.removed_files.length > 0) {
       summary += `### Removed Files (${diff.removed_files.length})
 `;
-      diff.removed_files.slice(0, maxFiles).forEach(file => {
+      diff.removed_files.slice(0, maxFiles).forEach((file) => {
         summary += `- \`${file.filename}\` (was ${file.percentage}%)\n`;
       });
-      
+
       if (diff.removed_files.length > maxFiles) {
         summary += `\n*... and ${diff.removed_files.length - maxFiles} more files*\n`;
       }
@@ -124,19 +176,19 @@ title ${title}
   if (showFiles && result.files.length > 0) {
     // Show files with low coverage first
     const lowCoverageFiles = result.files
-      .filter(f => f.percentage < 80)
+      .filter((f) => f.percentage < 80)
       .sort((a, b) => a.percentage - b.percentage);
-    
+
     if (lowCoverageFiles.length > 0) {
       summary += `### Files with Low Coverage (< 80%)
 | File | Coverage | Lines |
 |------|----------|-------|
 `;
-      lowCoverageFiles.slice(0, maxFiles).forEach(file => {
+      lowCoverageFiles.slice(0, maxFiles).forEach((file) => {
         const coverageEmoji = file.percentage >= 50 ? '⚠️' : '❌';
         summary += `| \`${file.filename}\` | ${coverageEmoji} ${file.percentage}% | ${file.covered}/${file.total} |\n`;
       });
-      
+
       if (lowCoverageFiles.length > maxFiles) {
         summary += `\n*... and ${lowCoverageFiles.length - maxFiles} more files*\n`;
       }
@@ -145,20 +197,38 @@ title ${title}
 
     // Show top performing files
     const topFiles = result.files
-      .filter(f => f.percentage >= 80)
+      .filter((f) => f.percentage >= 80)
       .sort((a, b) => b.percentage - a.percentage)
       .slice(0, 5);
-    
+
     if (topFiles.length > 0) {
       summary += `### Top Performing Files ✨
 | File | Coverage | Lines |
 |------|----------|-------|
 `;
-      topFiles.forEach(file => {
+      topFiles.forEach((file) => {
         summary += `| \`${file.filename}\` | ✅ ${file.percentage}% | ${file.covered}/${file.total} |\n`;
       });
       summary += '\n';
     }
+  }
+
+  // Add badge if requested
+  if (options?.generate_badge) {
+    const badgeStyle = options?.badge_style || 'flat';
+    let badgeColor = 'red';
+    if (result.percentage >= 80) badgeColor = 'brightgreen';
+    else if (result.percentage >= 60) badgeColor = 'yellow';
+    else if (result.percentage >= 40) badgeColor = 'orange';
+
+    const percentageText = `${result.percentage}%25`;
+    const badgeUrl = `https://img.shields.io/badge/coverage-${percentageText}-${badgeColor}?style=${badgeStyle}`;
+    const badgeMarkdown = `![Coverage](${badgeUrl})`;
+
+    summary += `### Coverage Badge 📊
+${badgeMarkdown}
+
+`;
   }
 
   summary += `---

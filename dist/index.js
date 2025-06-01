@@ -17586,12 +17586,12 @@ var require_lib = __commonJS({
             throw new Error("Client has already been disposed.");
           }
           const parsedUrl = new URL(requestUrl);
-          let info = this._prepareRequest(verb, parsedUrl, headers);
+          let info2 = this._prepareRequest(verb, parsedUrl, headers);
           const maxTries = this._allowRetries && RetryableHttpVerbs.includes(verb) ? this._maxRetries + 1 : 1;
           let numTries = 0;
           let response;
           do {
-            response = yield this.requestRaw(info, data);
+            response = yield this.requestRaw(info2, data);
             if (response && response.message && response.message.statusCode === HttpCodes.Unauthorized) {
               let authenticationHandler;
               for (const handler of this.handlers) {
@@ -17601,7 +17601,7 @@ var require_lib = __commonJS({
                 }
               }
               if (authenticationHandler) {
-                return authenticationHandler.handleAuthentication(this, info, data);
+                return authenticationHandler.handleAuthentication(this, info2, data);
               } else {
                 return response;
               }
@@ -17624,8 +17624,8 @@ var require_lib = __commonJS({
                   }
                 }
               }
-              info = this._prepareRequest(verb, parsedRedirectUrl, headers);
-              response = yield this.requestRaw(info, data);
+              info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
+              response = yield this.requestRaw(info2, data);
               redirectsRemaining--;
             }
             if (!response.message.statusCode || !HttpResponseRetryCodes.includes(response.message.statusCode)) {
@@ -17654,7 +17654,7 @@ var require_lib = __commonJS({
        * @param info
        * @param data
        */
-      requestRaw(info, data) {
+      requestRaw(info2, data) {
         return __awaiter(this, void 0, void 0, function* () {
           return new Promise((resolve, reject) => {
             function callbackForResult(err, res) {
@@ -17666,7 +17666,7 @@ var require_lib = __commonJS({
                 resolve(res);
               }
             }
-            this.requestRawWithCallback(info, data, callbackForResult);
+            this.requestRawWithCallback(info2, data, callbackForResult);
           });
         });
       }
@@ -17676,12 +17676,12 @@ var require_lib = __commonJS({
        * @param data
        * @param onResult
        */
-      requestRawWithCallback(info, data, onResult) {
+      requestRawWithCallback(info2, data, onResult) {
         if (typeof data === "string") {
-          if (!info.options.headers) {
-            info.options.headers = {};
+          if (!info2.options.headers) {
+            info2.options.headers = {};
           }
-          info.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
+          info2.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
         }
         let callbackCalled = false;
         function handleResult(err, res) {
@@ -17690,7 +17690,7 @@ var require_lib = __commonJS({
             onResult(err, res);
           }
         }
-        const req = info.httpModule.request(info.options, (msg) => {
+        const req = info2.httpModule.request(info2.options, (msg) => {
           const res = new HttpClientResponse(msg);
           handleResult(void 0, res);
         });
@@ -17702,7 +17702,7 @@ var require_lib = __commonJS({
           if (socket) {
             socket.end();
           }
-          handleResult(new Error(`Request timeout: ${info.options.path}`));
+          handleResult(new Error(`Request timeout: ${info2.options.path}`));
         });
         req.on("error", function(err) {
           handleResult(err);
@@ -17738,27 +17738,27 @@ var require_lib = __commonJS({
         return this._getProxyAgentDispatcher(parsedUrl, proxyUrl);
       }
       _prepareRequest(method, requestUrl, headers) {
-        const info = {};
-        info.parsedUrl = requestUrl;
-        const usingSsl = info.parsedUrl.protocol === "https:";
-        info.httpModule = usingSsl ? https : http;
+        const info2 = {};
+        info2.parsedUrl = requestUrl;
+        const usingSsl = info2.parsedUrl.protocol === "https:";
+        info2.httpModule = usingSsl ? https : http;
         const defaultPort = usingSsl ? 443 : 80;
-        info.options = {};
-        info.options.host = info.parsedUrl.hostname;
-        info.options.port = info.parsedUrl.port ? parseInt(info.parsedUrl.port) : defaultPort;
-        info.options.path = (info.parsedUrl.pathname || "") + (info.parsedUrl.search || "");
-        info.options.method = method;
-        info.options.headers = this._mergeHeaders(headers);
+        info2.options = {};
+        info2.options.host = info2.parsedUrl.hostname;
+        info2.options.port = info2.parsedUrl.port ? parseInt(info2.parsedUrl.port) : defaultPort;
+        info2.options.path = (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
+        info2.options.method = method;
+        info2.options.headers = this._mergeHeaders(headers);
         if (this.userAgent != null) {
-          info.options.headers["user-agent"] = this.userAgent;
+          info2.options.headers["user-agent"] = this.userAgent;
         }
-        info.options.agent = this._getAgent(info.parsedUrl);
+        info2.options.agent = this._getAgent(info2.parsedUrl);
         if (this.handlers) {
           for (const handler of this.handlers) {
-            handler.prepareRequest(info.options);
+            handler.prepareRequest(info2.options);
           }
         }
-        return info;
+        return info2;
       }
       _mergeHeaders(headers) {
         if (this.requestOptions && this.requestOptions.headers) {
@@ -19748,10 +19748,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       (0, command_1.issueCommand)("notice", (0, utils_1.toCommandProperties)(properties), message instanceof Error ? message.toString() : message);
     }
     exports2.notice = notice;
-    function info(message) {
+    function info2(message) {
       process.stdout.write(message + os.EOL);
     }
-    exports2.info = info;
+    exports2.info = info2;
     function startGroup(name) {
       (0, command_1.issue)("group", name);
     }
@@ -23933,7 +23933,9 @@ function parseLcov(lcov) {
       }
     } else if (line.trim() === "end_of_record") {
       if (currentFile.filename && currentFile.total !== void 0 && currentFile.covered !== void 0) {
-        currentFile.percentage = currentFile.total > 0 ? Number((currentFile.covered / currentFile.total * 100).toFixed(2)) : 0;
+        currentFile.percentage = currentFile.total > 0 ? Number(
+          (currentFile.covered / currentFile.total * 100).toFixed(2)
+        ) : 0;
         files.push(currentFile);
         totalLinesHit += currentFile.covered;
         totalLines += currentFile.total;
@@ -23951,7 +23953,9 @@ function parseLcov(lcov) {
   }
   let coveragePercentage = 0;
   if (totalLines > 0) {
-    coveragePercentage = Number((totalLinesHit / totalLines * 100).toFixed(2));
+    coveragePercentage = Number(
+      (totalLinesHit / totalLines * 100).toFixed(2)
+    );
   }
   return {
     covered: totalLinesHit,
@@ -23964,7 +23968,9 @@ function parseLcov(lcov) {
 function compareLcov(current, base) {
   if (!base) return null;
   const covered_diff = current.covered - base.covered;
-  const percentage_diff = Number((current.percentage - base.percentage).toFixed(2));
+  const percentage_diff = Number(
+    (current.percentage - base.percentage).toFixed(2)
+  );
   const baseFileMap = new Map(base.files.map((f) => [f.filename, f]));
   const currentFileMap = new Map(current.files.map((f) => [f.filename, f]));
   const files_changed = [];
@@ -23978,7 +23984,9 @@ function compareLcov(current, base) {
           filename: currentFile.filename,
           base_coverage: baseFile.percentage,
           current_coverage: currentFile.percentage,
-          coverage_diff: Number((currentFile.percentage - baseFile.percentage).toFixed(2)),
+          coverage_diff: Number(
+            (currentFile.percentage - baseFile.percentage).toFixed(2)
+          ),
           lines_diff: currentFile.covered - baseFile.covered
         });
       }
@@ -24001,11 +24009,34 @@ function compareLcov(current, base) {
 }
 
 // src/summary.ts
+function getCoverageSprite(percentage) {
+  if (percentage === 0) return "0.png";
+  if (percentage < 15) return "10.png";
+  if (percentage < 35) return "30.png";
+  if (percentage < 45) return "40.png";
+  if (percentage < 55) return "50.png";
+  if (percentage < 65) return "60.png";
+  if (percentage < 75) return "70.png";
+  if (percentage < 85) return "80.png";
+  if (percentage < 95) return "90.png";
+  return "100.png";
+}
+function generateCoverageSprite(percentage, githubContext) {
+  const sprite = getCoverageSprite(percentage);
+  const owner = githubContext?.owner || "seuros";
+  const repo = githubContext?.repo || "lcov-summary-action";
+  const ref = githubContext?.ref || "master";
+  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/icons/${sprite}`;
+  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+}
 function generateSummary(covered, not_covered, options) {
   const primary = options?.primary_color || "#4CAF50";
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
-  return `## \u{1F4CA} ${title}
+  const total = covered + not_covered;
+  const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(percentage, options?.github_context) : "";
+  return `## ${spriteHtml}\u{1F4CA} ${title}
 
 \`\`\`mermaid
   %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '${covered >= not_covered ? primary : secondary}', 'secondaryColor': '${covered < not_covered ? primary : secondary}',  'primaryTextColor': '#777', 'darkMode': { 'primaryTextColor': '#777'  } }}}%%
@@ -24027,7 +24058,8 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  let summary2 = `## \u{1F4CA} ${title}
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(result.percentage, options?.github_context) : "";
+  let summary2 = `## ${spriteHtml}\u{1F4CA} ${title}
 
 ### Overall Coverage
 - **${result.percentage}%** covered (${result.covered}/${result.covered + result.not_covered} lines)${thresholdText}
@@ -24132,6 +24164,20 @@ title ${title}
       summary2 += "\n";
     }
   }
+  if (options?.generate_badge) {
+    const badgeStyle = options?.badge_style || "flat";
+    let badgeColor = "red";
+    if (result.percentage >= 80) badgeColor = "brightgreen";
+    else if (result.percentage >= 60) badgeColor = "yellow";
+    else if (result.percentage >= 40) badgeColor = "orange";
+    const percentageText = `${result.percentage}%25`;
+    const badgeUrl = `https://img.shields.io/badge/coverage-${percentageText}-${badgeColor}?style=${badgeStyle}`;
+    const badgeMarkdown = `![Coverage](${badgeUrl})`;
+    summary2 += `### Coverage Badge \u{1F4CA}
+${badgeMarkdown}
+
+`;
+  }
   summary2 += `---
 *Generated by LCovMan \u{1F995}*`;
   return summary2;
@@ -24179,49 +24225,105 @@ async function main() {
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
     max_files_shown: inputs.maxFilesShown,
-    coverage_threshold: inputs.coverageThreshold
+    coverage_threshold: inputs.coverageThreshold,
+    generate_badge: inputs.generateBadge,
+    badge_style: inputs.badgeStyle,
+    show_coverage_sprite: inputs.showCoverageSprite,
+    github_context: {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
+    }
   }) : generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
-    secondary_color: inputs.secondary_color
+    secondary_color: inputs.secondary_color,
+    show_coverage_sprite: inputs.showCoverageSprite,
+    github_context: {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      ref: github.context.eventName === "pull_request" ? github.context.payload.pull_request?.head?.ref || "master" : github.context.ref
+    }
   });
   const context2 = github.context;
-  if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(github.context.payload.action || "") && inputs.commentPr) {
+  console.log("\u{1F50D} Debug: PR Comment Analysis");
+  console.log("- Event name:", context2.eventName);
+  console.log("- Action:", context2.payload.action);
+  console.log("- Has PR payload:", !!context2.payload.pull_request);
+  console.log("- Comment PR enabled:", inputs.commentPr);
+  console.log("- Original ref:", context2.ref);
+  console.log("- PR head ref:", context2.payload.pull_request?.head?.ref);
+  console.log(
+    "- Computed sprite ref:",
+    context2.eventName === "pull_request" ? context2.payload.pull_request?.head?.ref || "master" : context2.ref
+  );
+  console.log(
+    "- Valid actions:",
+    ["opened", "synchronize", "reopened"].includes(
+      context2.payload.action || ""
+    )
+  );
+  if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(
+    github.context.payload.action || ""
+  ) && inputs.commentPr) {
+    console.log("\u{1F4DD} Entering PR comment logic...");
     const pull_request_number = context2.payload.pull_request.number;
+    console.log("- PR Number:", pull_request_number);
     const octokit = new github.getOctokit(inputs.githubToken);
-    const comments = await octokit.rest.issues.listComments({
-      owner: context2.repo.owner,
-      repo: context2.repo.repo,
-      issue_number: pull_request_number
-    });
-    const botComment = comments.data.find(
-      (comment) => comment.user?.login === "LCovMan" || comment.body?.includes("Generated by LCovMan \u{1F995}")
-    );
-    if (botComment && github.context.payload.action !== "opened") {
-      await octokit.rest.issues.updateComment({
+    try {
+      console.log("\u{1F50D} Looking for existing comments...");
+      const comments = await octokit.rest.issues.listComments({
         owner: context2.repo.owner,
         repo: context2.repo.repo,
-        comment_id: botComment.id,
-        body: summary2
+        issue_number: pull_request_number
       });
-    } else {
-      await octokit.rest.issues.createComment({
-        owner: context2.repo.owner,
-        repo: context2.repo.repo,
-        issue_number: pull_request_number,
-        body: summary2
-      });
+      console.log("- Found", comments.data.length, "comments total");
+      const botComment = comments.data.find(
+        (comment) => comment.user?.login === "LCovMan" || comment.body?.includes("Generated by LCovMan \u{1F995}")
+      );
+      console.log("- Found existing LCovMan comment:", !!botComment);
+      if (botComment) {
+        console.log("- Existing comment ID:", botComment.id);
+        console.log("- Comment author:", botComment.user?.login);
+      }
+      if (botComment && github.context.payload.action !== "opened") {
+        console.log("\u{1F504} Updating existing comment...");
+        await octokit.rest.issues.updateComment({
+          owner: context2.repo.owner,
+          repo: context2.repo.repo,
+          comment_id: botComment.id,
+          body: summary2
+        });
+        console.log("\u2705 Comment updated successfully");
+      } else {
+        console.log("\u{1F4C4} Creating new comment...");
+        await octokit.rest.issues.createComment({
+          owner: context2.repo.owner,
+          repo: context2.repo.repo,
+          issue_number: pull_request_number,
+          body: summary2
+        });
+        console.log("\u2705 Comment created successfully");
+      }
+    } catch (error) {
+      console.error("\u274C Error in comment logic:", error);
     }
+  } else {
+    console.log("\u23ED\uFE0F Skipping PR comment (conditions not met)");
   }
   let shouldFail = false;
   const failureReasons = [];
   if (result.percentage < inputs.coverageThreshold) {
     shouldFail = true;
-    failureReasons.push(`Coverage ${result.percentage}% is below threshold ${inputs.coverageThreshold}%`);
+    failureReasons.push(
+      `Coverage ${result.percentage}% is below threshold ${inputs.coverageThreshold}%`
+    );
   }
   if (inputs.failOnDecrease && diff && diff.percentage_diff < 0) {
     shouldFail = true;
-    failureReasons.push(`Coverage decreased by ${Math.abs(diff.percentage_diff)}%`);
+    failureReasons.push(
+      `Coverage decreased by ${Math.abs(diff.percentage_diff)}%`
+    );
   }
   if (shouldFail) {
     const errorMessage = `\u274C Coverage check failed: ${failureReasons.join(", ")}`;
@@ -24230,7 +24332,25 @@ async function main() {
   } else {
     const threshold = inputs.coverageThreshold;
     const status = result.percentage >= threshold ? "\u2705" : "\u26A0\uFE0F";
-    console.log(`${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`);
+    console.log(
+      `${status} Coverage: ${result.percentage}% (threshold: ${threshold}%)`
+    );
+  }
+  if (inputs.generateBadge) {
+    const badge = generateCoverageBadge(result.percentage, inputs.badgeStyle);
+    core.info(`Coverage Badge URL: ${badge.url}`);
+    core.info(`Coverage Badge Markdown: ${badge.markdown}`);
+    core.summary.addHeading("Coverage Badge", 3).addRaw(
+      `Copy this to your README.md:
+
+\`\`\`markdown
+${badge.markdown}
+\`\`\`
+
+`
+    ).addRaw(`Preview: ${badge.markdown}
+
+`);
   }
   await core.summary.addTable([
     [
@@ -24247,12 +24367,35 @@ async function main() {
     ["Total Uncovered", result.not_covered.toString()],
     ["Coverage Percentage", `${result.percentage}%`],
     ["Coverage Threshold", `${inputs.coverageThreshold}%`],
-    ["Threshold Status", result.percentage >= inputs.coverageThreshold ? "\u2705 Pass" : "\u274C Fail"],
+    [
+      "Threshold Status",
+      result.percentage >= inputs.coverageThreshold ? "\u2705 Pass" : "\u274C Fail"
+    ],
     ["Files Analyzed", result.total_files.toString()]
   ]).addRaw("", true).addRaw(summary2).write();
 }
 function isValidHexColor(color) {
   return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+}
+function isValidBadgeStyle(style) {
+  const validStyles = [
+    "flat",
+    "flat-square",
+    "plastic",
+    "for-the-badge",
+    "social"
+  ];
+  return validStyles.includes(style);
+}
+function generateCoverageBadge(percentage, style = "flat") {
+  let color = "red";
+  if (percentage >= 80) color = "brightgreen";
+  else if (percentage >= 60) color = "yellow";
+  else if (percentage >= 40) color = "orange";
+  const percentageText = `${percentage}%25`;
+  const url = `https://img.shields.io/badge/coverage-${percentageText}-${color}?style=${style}`;
+  const markdown = `![Coverage](${url})`;
+  return { url, markdown };
 }
 function getInputs() {
   const lcovFile = getInputFilePath(
@@ -24264,20 +24407,28 @@ function getInputs() {
   const primaryColor = getInputValue("pie-covered-color") || "#4CAF50";
   const secondaryColor = getInputValue("pie-not-covered-color") || "#FF5733";
   if (primaryColor && !isValidHexColor(primaryColor)) {
-    core.warning(`Invalid primary color '${primaryColor}', using default #4CAF50`);
+    core.warning(
+      `Invalid primary color '${primaryColor}', using default #4CAF50`
+    );
   }
   if (secondaryColor && !isValidHexColor(secondaryColor)) {
-    core.warning(`Invalid secondary color '${secondaryColor}', using default #FF5733`);
+    core.warning(
+      `Invalid secondary color '${secondaryColor}', using default #FF5733`
+    );
   }
   const maxFilesInput = getInputValue("max-files-shown");
   const maxFilesShown = maxFilesInput ? parseInt(maxFilesInput, 10) : 10;
   if (isNaN(maxFilesShown) || maxFilesShown < 1) {
-    core.warning(`Invalid max-files-shown '${maxFilesInput}', using default 10`);
+    core.warning(
+      `Invalid max-files-shown '${maxFilesInput}', using default 10`
+    );
   }
   const thresholdInput = getInputValue("coverage-threshold");
   const coverageThreshold = thresholdInput ? parseFloat(thresholdInput) : 70;
   if (isNaN(coverageThreshold) || coverageThreshold < 0 || coverageThreshold > 100) {
-    core.warning(`Invalid coverage-threshold '${thresholdInput}', using default 70`);
+    core.warning(
+      `Invalid coverage-threshold '${thresholdInput}', using default 70`
+    );
   }
   return {
     githubToken: getInputValue("github-token"),
@@ -24292,7 +24443,19 @@ function getInputs() {
     detailedSummary: getInputBoolValue("detailed-summary"),
     maxFilesShown: !isNaN(maxFilesShown) && maxFilesShown >= 1 ? maxFilesShown : 10,
     coverageThreshold: !isNaN(coverageThreshold) && coverageThreshold >= 0 && coverageThreshold <= 100 ? coverageThreshold : 70,
-    failOnDecrease: getInputBoolValue("fail-on-coverage-decrease")
+    failOnDecrease: getInputBoolValue("fail-on-coverage-decrease"),
+    generateBadge: getInputBoolValue("generate-badge"),
+    badgeStyle: (() => {
+      const style = getInputValue("badge-style") || "flat";
+      if (!isValidBadgeStyle(style)) {
+        core.warning(
+          `Invalid badge-style '${style}', using default 'flat'. Valid styles: flat, flat-square, plastic, for-the-badge, social`
+        );
+        return "flat";
+      }
+      return style;
+    })(),
+    showCoverageSprite: getInputBoolValue("show-coverage-sprite")
   };
 }
 function getInputFilePath(inputName, defaultValue) {

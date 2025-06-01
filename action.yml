@@ -34,14 +34,14 @@ inputs:
   debug-lcov:
     description: Debug LCOV file (Show the content of the LCOV file)
     required: false
-    default: false
+    default: 'false'
   base-lcov-file:
     description: Path to base branch LCOV file for comparison
     required: false
   detailed-summary:
     description: Generate detailed summary with file breakdown
     required: false
-    default: false
+    default: 'false'
   max-files-shown:
     description: Maximum number of files to show in detailed reports
     required: false
@@ -52,6 +52,18 @@ inputs:
     default: '70'
   fail-on-coverage-decrease:
     description: Fail if coverage decreases compared to base
+    required: false
+    default: 'false'
+  generate-badge:
+    description: Generate coverage badge markdown for README
+    required: false
+    default: 'false'
+  badge-style:
+    description: Badge style (flat, flat-square, plastic, for-the-badge, social)
+    required: false
+    default: 'flat'
+  show-coverage-sprite:
+    description: Show coverage sprite icon in PR comments (0%, 10%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%)
     required: false
     default: 'false'
 runs:
