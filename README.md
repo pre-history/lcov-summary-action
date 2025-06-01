@@ -19,7 +19,6 @@ title Project Coverage
 - Summarizes LCOV reports in GitHub Pull Requests.
 - Provides a clear and concise overview of code coverage changes.
 - Helps maintain high test coverage by making coverage changes visible in each PR.
-- Optional coverage sprite icons to visualize coverage levels (0%, 10%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%).
 - 147 unique randomized feedback messages that progress from roasting low coverage to celebrating high coverage.
 
 ## Usage
@@ -28,27 +27,57 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
 
 ```yaml
 - name: LCOV Summary
-  uses: pre-history/lcov-summary-action@v0.4.1
+  uses: pre-history/lcov-summary-action@v0.6.0
   with:
     lcov-file: './coverage/lcov.info'
     comment-on-pr: true
-    show-coverage-sprite: true
     show-coverage-feedback: true
 ```
 
 ## Inputs
 
-| Input Name               | Description                                                                   | Required | Default Value          |
-| ------------------------ | ----------------------------------------------------------------------------- | -------- | ---------------------- |
-| `github-token`           | GitHub token                                                                  | NO       | `${{ github.token }}`  |
-| `title`                  | Summary title                                                                 | No       | -                      |
-| `lcov-file`              | Path to LCOV file                                                             | No       | `./coverage/lcov.info` |
-| `comment-on-pr`          | Add diagram comment to the current PR [Need Permission](#permissions)         | No       | `false`                |
-| `working-directory`      | Set working directory if project is not in root folder                        | No       | `./`                   |
-| `pie-covered-color`      | Color for pie chart covered part                                              | No       | `#4CAF50`              |
-| `pie-not-covered-color`  | Color for pie chart not covered part                                          | No       | `#FF5733`              |
-| `show-coverage-sprite`   | Show coverage sprite icon in PR comments                                      | No       | `false`                |
-| `show-coverage-feedback` | Show randomized coverage feedback messages (147 unique roasts/encouragements) | No       | `false`                |
+| Input Name                  | Description                                                                   | Required | Default Value          |
+| --------------------------- | ----------------------------------------------------------------------------- | -------- | ---------------------- |
+| `github-token`              | GitHub token                                                                  | NO       | `${{ github.token }}`  |
+| `title`                     | Summary title                                                                 | No       | -                      |
+| `lcov-file`                 | Path to LCOV file                                                             | No       | `./coverage/lcov.info` |
+| `comment-on-pr`             | Add diagram comment to the current PR [Need Permission](#permissions)         | No       | `false`                |
+| `working-directory`         | Set working directory if project is not in root folder                        | No       | `./`                   |
+| `pie-covered-color`         | Color for pie chart covered part                                              | No       | `#4CAF50`              |
+| `pie-not-covered-color`     | Color for pie chart not covered part                                          | No       | `#FF5733`              |
+| `coverage-threshold`        | Minimum coverage percentage required (action fails if below)                  | No       | `0` (no enforcement)   |
+| `fail-on-coverage-decrease` | Fail if coverage decreases compared to base branch                            | No       | `false`                |
+| `show-coverage-feedback`    | Show randomized coverage feedback messages (147 unique roasts/encouragements) | No       | `false`                |
+
+## Coverage Philosophy
+
+**LCovMan is designed to inform, not enforce.** By default, the action provides visibility into coverage without blocking your development workflow:
+
+- **No coverage thresholds** by default (`coverage-threshold: 0`)
+- **No failure on coverage decrease** by default (`fail-on-coverage-decrease: false`)
+- **Focus on transparency** - Shows coverage changes clearly in PR comments
+- **Optional enforcement** - You can enable thresholds if your team prefers strict enforcement
+
+### Examples
+
+**Informational only (default):**
+
+```yaml
+- uses: pre-history/lcov-summary-action@latest
+  with:
+    comment-on-pr: true
+    # Uses defaults: no threshold enforcement
+```
+
+**With enforcement:**
+
+```yaml
+- uses: pre-history/lcov-summary-action@latest
+  with:
+    comment-on-pr: true
+    coverage-threshold: '80' # Require 80% coverage
+    fail-on-coverage-decrease: true # Block PRs that decrease coverage
+```
 
 ## Permissions
 
