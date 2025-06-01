@@ -19,7 +19,7 @@
   "scripts": {
     "build": "ts-node esbuild.config.ts",
     "test": "bun test",
-    "coverage": "nyc bun run test",
+    "coverage": "bun test --coverage --coverage-reporter=lcov --coverage-reporter=text",
     "prettier": "prettier --write .",
     "prettier:check": "prettier --check ."
   },
@@ -31,11 +31,9 @@
     "@actions/github": "^6.0.1"
   },
   "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/node": "^22.15.29",
     "cjs-mock": "^3.1.0",
     "esbuild": "^0.25.5",
-    "nyc": "^17.1.0",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",
