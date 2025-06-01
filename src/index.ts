@@ -69,12 +69,22 @@ async function main() {
         generate_badge: inputs.generateBadge,
         badge_style: inputs.badgeStyle,
         show_coverage_sprite: inputs.showCoverageSprite,
+        github_context: {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          ref: github.context.ref,
+        },
       })
     : generateSummary(result.covered, result.not_covered, {
         title: inputs.title,
         primary_color: inputs.primary_color,
         secondary_color: inputs.secondary_color,
         show_coverage_sprite: inputs.showCoverageSprite,
+        github_context: {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          ref: github.context.ref,
+        },
       });
   const context = github.context;
 

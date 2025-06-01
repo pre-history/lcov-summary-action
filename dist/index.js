@@ -24021,9 +24021,12 @@ function getCoverageSprite(percentage) {
   if (percentage < 95) return "90.png";
   return "100.png";
 }
-function generateCoverageSprite(percentage) {
+function generateCoverageSprite(percentage, githubContext) {
   const sprite = getCoverageSprite(percentage);
-  const spriteUrl = `https://raw.githubusercontent.com/seuros/lcov-summary-action/master/sprites/icons/${sprite}`;
+  const owner = githubContext?.owner || "seuros";
+  const repo = githubContext?.repo || "lcov-summary-action";
+  const ref = githubContext?.ref || "master";
+  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/icons/${sprite}`;
   return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
 }
 function generateSummary(covered, not_covered, options) {
@@ -24032,7 +24035,7 @@ function generateSummary(covered, not_covered, options) {
   const title = options?.title || "Project Coverage";
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(percentage) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(percentage, options?.github_context) : "";
   return `## ${spriteHtml}\u{1F4CA} ${title}
 
 \`\`\`mermaid
@@ -24055,7 +24058,7 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(result.percentage) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(result.percentage, options?.github_context) : "";
   let summary2 = `## ${spriteHtml}\u{1F4CA} ${title}
 
 ### Overall Coverage
@@ -24225,12 +24228,22 @@ async function main() {
     coverage_threshold: inputs.coverageThreshold,
     generate_badge: inputs.generateBadge,
     badge_style: inputs.badgeStyle,
-    show_coverage_sprite: inputs.showCoverageSprite
+    show_coverage_sprite: inputs.showCoverageSprite,
+    github_context: {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      ref: github.context.ref
+    }
   }) : generateSummary(result.covered, result.not_covered, {
     title: inputs.title,
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
-    show_coverage_sprite: inputs.showCoverageSprite
+    show_coverage_sprite: inputs.showCoverageSprite,
+    github_context: {
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      ref: github.context.ref
+    }
   });
   const context2 = github.context;
   console.log("\u{1F50D} Debug: PR Comment Analysis");

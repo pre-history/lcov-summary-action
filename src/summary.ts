@@ -20,9 +20,18 @@ function getCoverageSprite(percentage: number): string {
 /**
  * Generates coverage sprite markdown
  */
-function generateCoverageSprite(percentage: number): string {
+function generateCoverageSprite(
+  percentage: number,
+  githubContext?: { owner: string; repo: string; ref: string },
+): string {
   const sprite = getCoverageSprite(percentage);
-  const spriteUrl = `https://raw.githubusercontent.com/seuros/lcov-summary-action/master/sprites/icons/${sprite}`;
+
+  // Use current repo and branch context if available, fallback to master
+  const owner = githubContext?.owner || 'seuros';
+  const repo = githubContext?.repo || 'lcov-summary-action';
+  const ref = githubContext?.ref || 'master';
+
+  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/icons/${sprite}`;
   return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
 }
 
@@ -36,6 +45,7 @@ interface Options {
   generate_badge?: boolean;
   badge_style?: string;
   show_coverage_sprite?: boolean;
+  github_context?: { owner: string; repo: string; ref: string };
 }
 
 export function generateSummary(
@@ -50,7 +60,7 @@ export function generateSummary(
   const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSprite(percentage)
+    ? generateCoverageSprite(percentage, options?.github_context)
     : '';
 
   return `## ${spriteHtml}📊 ${title}
@@ -84,7 +94,7 @@ export function generateDetailedSummary(
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSprite(result.percentage)
+    ? generateCoverageSprite(result.percentage, options?.github_context)
     : '';
 
   let summary = `## ${spriteHtml}📊 ${title}
