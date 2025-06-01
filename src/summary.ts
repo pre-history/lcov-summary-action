@@ -13,7 +13,6 @@ interface Options {
   coverage_threshold?: number;
   generate_badge?: boolean;
   badge_style?: string;
-  show_coverage_sprite?: boolean;
   show_coverage_feedback?: boolean;
   github_context?: { owner: string; repo: string; ref: string };
 }
@@ -29,7 +28,7 @@ export function generateSummary(
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
 
-  const spriteHtml = options?.show_coverage_sprite
+  const spriteHtml = options?.show_coverage_feedback
     ? generateCoverageSpriteWithFeedback(
         percentage,
         options?.github_context,
@@ -67,7 +66,7 @@ export function generateDetailedSummary(
   const thresholdText =
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
-  const spriteHtml = options?.show_coverage_sprite
+  const spriteHtml = options?.show_coverage_feedback
     ? generateCoverageSpriteWithFeedback(
         result.percentage,
         options?.github_context,

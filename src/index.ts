@@ -68,7 +68,6 @@ async function main() {
         coverage_threshold: inputs.coverageThreshold,
         generate_badge: inputs.generateBadge,
         badge_style: inputs.badgeStyle,
-        show_coverage_sprite: inputs.showCoverageSprite,
         show_coverage_feedback: inputs.showCoverageFeedback,
         github_context: {
           owner: github.context.repo.owner,
@@ -83,7 +82,6 @@ async function main() {
         title: inputs.title,
         primary_color: inputs.primary_color,
         secondary_color: inputs.secondary_color,
-        show_coverage_sprite: inputs.showCoverageSprite,
         show_coverage_feedback: inputs.showCoverageFeedback,
         github_context: {
           owner: github.context.repo.owner,
@@ -311,7 +309,6 @@ export function getInputs(): {
   failOnDecrease: boolean;
   generateBadge: boolean;
   badgeStyle: string;
-  showCoverageSprite: boolean;
   showCoverageFeedback: boolean;
 } {
   const lcovFile = getInputFilePath(
@@ -391,7 +388,6 @@ export function getInputs(): {
       }
       return style;
     })(),
-    showCoverageSprite: getInputBoolValue('show-coverage-sprite'),
     showCoverageFeedback: getInputBoolValue('show-coverage-feedback'),
   };
 }

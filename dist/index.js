@@ -24247,7 +24247,7 @@ function generateSummary(covered, not_covered, options) {
   const title = options?.title || "Project Coverage";
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+  const spriteHtml = options?.show_coverage_feedback ? generateCoverageSpriteWithFeedback(
     percentage,
     options?.github_context,
     options?.show_coverage_feedback
@@ -24274,7 +24274,7 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+  const spriteHtml = options?.show_coverage_feedback ? generateCoverageSpriteWithFeedback(
     result.percentage,
     options?.github_context,
     options?.show_coverage_feedback
@@ -24448,7 +24448,6 @@ async function main() {
     coverage_threshold: inputs.coverageThreshold,
     generate_badge: inputs.generateBadge,
     badge_style: inputs.badgeStyle,
-    show_coverage_sprite: inputs.showCoverageSprite,
     show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
@@ -24459,7 +24458,6 @@ async function main() {
     title: inputs.title,
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
-    show_coverage_sprite: inputs.showCoverageSprite,
     show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
@@ -24677,7 +24675,6 @@ function getInputs() {
       }
       return style;
     })(),
-    showCoverageSprite: getInputBoolValue("show-coverage-sprite"),
     showCoverageFeedback: getInputBoolValue("show-coverage-feedback")
   };
 }
