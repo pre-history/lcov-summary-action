@@ -34,14 +34,14 @@ inputs:
   debug-lcov:
     description: Debug LCOV file (Show the content of the LCOV file)
     required: false
-    default: false
+    default: 'false'
   base-lcov-file:
     description: Path to base branch LCOV file for comparison
     required: false
   detailed-summary:
     description: Generate detailed summary with file breakdown
     required: false
-    default: false
+    default: 'false'
   max-files-shown:
     description: Maximum number of files to show in detailed reports
     required: false
