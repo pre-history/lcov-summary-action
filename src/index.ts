@@ -100,6 +100,14 @@ async function main() {
   console.log('- Action:', context.payload.action);
   console.log('- Has PR payload:', !!context.payload.pull_request);
   console.log('- Comment PR enabled:', inputs.commentPr);
+  console.log('- Original ref:', context.ref);
+  console.log('- PR head ref:', context.payload.pull_request?.head?.ref);
+  console.log(
+    '- Computed sprite ref:',
+    context.eventName === 'pull_request'
+      ? context.payload.pull_request?.head?.ref || 'master'
+      : context.ref,
+  );
   console.log(
     '- Valid actions:',
     ['opened', 'synchronize', 'reopened'].includes(

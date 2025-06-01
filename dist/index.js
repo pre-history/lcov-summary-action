@@ -24251,6 +24251,12 @@ async function main() {
   console.log("- Action:", context2.payload.action);
   console.log("- Has PR payload:", !!context2.payload.pull_request);
   console.log("- Comment PR enabled:", inputs.commentPr);
+  console.log("- Original ref:", context2.ref);
+  console.log("- PR head ref:", context2.payload.pull_request?.head?.ref);
+  console.log(
+    "- Computed sprite ref:",
+    context2.eventName === "pull_request" ? context2.payload.pull_request?.head?.ref || "master" : context2.ref
+  );
   console.log(
     "- Valid actions:",
     ["opened", "synchronize", "reopened"].includes(
