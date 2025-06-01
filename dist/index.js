@@ -24026,7 +24026,7 @@ function generateCoverageSprite(percentage, githubContext) {
   const owner = githubContext?.owner || "seuros";
   const repo = githubContext?.repo || "lcov-summary-action";
   const ref = githubContext?.ref || "master";
-  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/icons/${sprite}`;
+  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${sprite}`;
   return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
 }
 function generateSummary(covered, not_covered, options) {
