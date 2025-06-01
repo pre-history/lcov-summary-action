@@ -75,6 +75,15 @@ async function main() {
         secondary_color: inputs.secondary_color,
       });
   const context = github.context;
+  
+  // Debug logging for PR comment functionality
+  console.log('🔍 Debug: PR Comment Analysis');
+  console.log('- Event name:', context.eventName);
+  console.log('- Action:', context.payload.action);
+  console.log('- Has PR payload:', !!context.payload.pull_request);
+  console.log('- Comment PR enabled:', inputs.commentPr);
+  console.log('- Valid actions:', ['opened', 'synchronize', 'reopened'].includes(context.payload.action || ''));
+  
   if (
     context.payload.pull_request &&
     ['opened', 'synchronize', 'reopened'].includes(

@@ -24215,6 +24215,12 @@ async function main() {
     secondary_color: inputs.secondary_color
   });
   const context2 = github.context;
+  console.log("\u{1F50D} Debug: PR Comment Analysis");
+  console.log("- Event name:", context2.eventName);
+  console.log("- Action:", context2.payload.action);
+  console.log("- Has PR payload:", !!context2.payload.pull_request);
+  console.log("- Comment PR enabled:", inputs.commentPr);
+  console.log("- Valid actions:", ["opened", "synchronize", "reopened"].includes(context2.payload.action || ""));
   if (context2.payload.pull_request && ["opened", "synchronize", "reopened"].includes(
     github.context.payload.action || ""
   ) && inputs.commentPr) {
