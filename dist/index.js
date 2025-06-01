@@ -24008,34 +24008,250 @@ function compareLcov(current, base) {
   };
 }
 
-// src/summary.ts
-function getCoverageSprite(percentage) {
-  if (percentage === 0) return "0.png";
-  if (percentage < 15) return "10.png";
-  if (percentage < 35) return "30.png";
-  if (percentage < 45) return "40.png";
-  if (percentage < 55) return "50.png";
-  if (percentage < 65) return "60.png";
-  if (percentage < 75) return "70.png";
-  if (percentage < 85) return "80.png";
-  if (percentage < 95) return "90.png";
-  return "100.png";
+// src/feedback.ts
+var FEEDBACK_RANGES = [
+  {
+    min: 0,
+    max: 0,
+    sprites: ["0.png"],
+    messages: [
+      "\u{1F480} Your code coverage is deader than a doornail! Time to write some tests!",
+      "\u{1F525} 0% coverage? That's not testing, that's just wishful thinking!",
+      "\u{1F631} No tests detected. Your code is running naked in production!",
+      "\u{1F6AB} Tests? What tests? This is the wild west out here.",
+      "\u{1F4C9} Your coverage graph is a flatline. RIP.",
+      "\u{1F9E8} Deploying this is like lighting a match in a fireworks factory.",
+      "\u{1F47B} Your tests are ghosts. I can feel them... but they\u2019re not real.",
+      "\u{1F6D1} This code is legally uninsurable.",
+      "\u{1F937}\u200D\u2642\uFE0F Why test something when you can just *believe* in it, right?",
+      "\u{1F635} Zero percent? That\u2019s a round number, I\u2019ll give you that.",
+      "\u{1F3DA}\uFE0F Your test suite is a haunted house. Empty, spooky, and full of regrets.",
+      "\u{1F5D1}\uFE0F It's not that your code is untested. It\u2019s that it\u2019s *actively resisting* being tested.",
+      "\u{1F4F5} You've reached the 'No Service' area of the test network.",
+      "\u{1F52E} No tests, only vibes.",
+      "\u{1F3B2} Shipping untested code is like gambling. Except the house always wins.",
+      "\u{1F9B4} Bare bones coverage. Actually, just the bones. No meat.",
+      "\u{1F648} Even your rubber duck is concerned.",
+      "\u{1F974} I ran the coverage report and it cried.",
+      "\u{1F44E} This coverage is setting new *low* standards.",
+      "\u{1F9F9} You\u2019ve swept testing completely under the rug.",
+      "\u{1F40D} Even the snake (your CI) is hissing in disapproval."
+    ]
+  },
+  {
+    min: 1,
+    max: 19,
+    sprites: ["10.png"],
+    messages: [
+      "\u{1F926}\u200D\u2642\uFE0F Single digit coverage? Come on, you can do better than this!",
+      "\u{1F62C} Your tests are as rare as unicorns. Write more!",
+      "\u{1F6A8} This coverage level is giving me anxiety. Please test more!",
+      "\u{1F4C9} Barely breathing. This coverage needs CPR.",
+      "\u{1F3AD} These tests are just for show, right?",
+      "\u{1F9CA} Your testing effort is chillingly minimal.",
+      "\u{1FAE5} You technically *have* tests, but like, not really.",
+      "\u{1F976} That\u2019s some cold, cold coverage. Where\u2019s the warmth?",
+      "\u{1F4E1} Signal detected... just barely.",
+      "\u{1F997} Test results came back and it was just crickets.",
+      "\u{1F50E} I had to squint to find your tests.",
+      "\u{1F4B8} This coverage is costing you more than it\u2019s saving.",
+      "\u{1F3AF} You\u2019re aiming at quality, but you haven\u2019t hit it yet.",
+      "\u{1FAE3} Your tests peek out, then immediately hide again.",
+      "\u{1F9EF} Fire hazard. There\u2019s not enough coverage to prevent damage.",
+      "\u{1F3A2} Low and wild. Your code\u2019s future is a rollercoaster.",
+      "\u{1F971} This test suite is not pulling its weight.",
+      "\u{1F614} This could be the beginning of a beautiful test suite... but it\u2019s not.",
+      "\u{1F9EA} There are *some* experiments happening here... we think.",
+      "\u{1F915} One test walks into prod. It doesn\u2019t end well.",
+      "\u{1F440} I see your tests. Blink and they\u2019re gone."
+    ]
+  },
+  {
+    min: 20,
+    max: 39,
+    sprites: ["30.png"],
+    messages: [
+      "\u{1F615} Getting warmer, but still pretty chilly in here. More tests needed!",
+      "\u{1F321}\uFE0F Your coverage is like lukewarm coffee - not quite there yet.",
+      "\u{1F4C8} Progress! But let's keep climbing that coverage mountain.",
+      "\u{1F9D7} You're testing, but the summit's still far off.",
+      "\u{1F331} A seedling of coverage. Needs more sunshine and effort.",
+      "\u{1F6A7} Under construction. Wear a hard hat.",
+      "\u{1F9C3} This coverage is juice, not yet power.",
+      "\u{1F4DA} Looks like a syllabus, not the full course.",
+      "\u{1F3C3} You\u2019ve started the race. Don't slow down now.",
+      "\u2699\uFE0F The gears are turning, but the machine\u2019s still stalling.",
+      "\u{1F3AC} Scene one. Testing has entered the chat.",
+      "\u{1F393} Baby\u2019s first test suite.",
+      "\u{1F4BC} Some business logic is covered. The rest is on vacation.",
+      "\u{1F4E6} You've packed *some* test cases. Don\u2019t forget the essentials.",
+      "\u{1F32B}\uFE0F Foggy coverage. We need more clarity.",
+      "\u{1F4E1} Receiving test signals. They\u2019re weak, but they\u2019re there.",
+      "\u{1F9F1} Foundation poured. Now build it up.",
+      "\u{1F4A4} Coverage is awake, but still sleepy.",
+      "\u{1F4C9} Your graph looks like it sneezed and gave up.",
+      "\u{1F939} Some test juggling happening. Just don't drop it all.",
+      "\u{1F526} A little test coverage shines through the darkness."
+    ]
+  },
+  {
+    min: 40,
+    max: 59,
+    sprites: ["40.png", "50.png"],
+    messages: [
+      "\u{1F914} Half-way there! Your code is 50% protected, 50% vulnerable.",
+      "\u2696\uFE0F Balanced, as all things should be... but let's tip the scales toward more tests!",
+      "\u{1F3AF} You're in the zone! Keep pushing toward better coverage.",
+      "\u{1F504} This is the testing limbo zone. Dance your way out of it.",
+      "\u{1F6E1}\uFE0F Half armor is still a liability.",
+      "\u{1F4C9} That\u2019s not bad... but also not great.",
+      "\u{1F4CA} Coverage report looks like an awkward shrug.",
+      "\u{1F4A1} You've discovered tests exist. Now use that power.",
+      "\u{1F3A2} This is the middle of the ride. Don't puke yet.",
+      "\u{1F3D7}\uFE0F A solid frame, but still needs walls, roof, and maybe plumbing.",
+      "\u{1F3AD} Half your app has an understudy.",
+      "\u23F3 You've tested the past. The future\u2019s wide open.",
+      "\u{1F527} Half-covered code is like a wrench missing its handle.",
+      "\u{1F6AA} You've opened the door. Please walk through it.",
+      "\u{1F9E9} Some pieces of the puzzle are still missing.",
+      "\u{1F9EE} Numbers look okay, but numbers lie.",
+      "\u{1F573}\uFE0F Your test net still has holes. Big ones.",
+      "\u{1F97D} Safety goggles on, but you\u2019re still missing gloves.",
+      "\u{1F570}\uFE0F A fine start. But the testing times are still a-changin'.",
+      "\u{1F45F} You're halfway across the bridge. Don\u2019t turn around.",
+      "\u{1F317} Half moon coverage. We want full moon energy."
+    ]
+  },
+  {
+    min: 60,
+    max: 79,
+    sprites: ["60.png", "70.png"],
+    messages: [
+      "\u{1F44D} Not bad! Your code is feeling more confident with each test.",
+      "\u{1F680} Good coverage! You're building trust with every test case.",
+      "\u{1F4AA} Strong coverage game! Your future self will thank you.",
+      "\u{1F9E0} Smart testing detected. Keep flexing that brain.",
+      "\u{1F31F} You're becoming someone your code can rely on.",
+      "\u{1F9F5} Things are stitched together nicely, but there\u2019s room for embroidery.",
+      "\u{1F50D} Most of your logic is under scrutiny. Good work, detective.",
+      "\u{1F4D8} Your test story is interesting. We\u2019re just missing the last chapter.",
+      "\u{1F9F0} You've opened the toolbox and you're actually using the tools.",
+      "\u{1F3D7}\uFE0F That test scaffolding is looking solid.",
+      "\u{1F3A8} Your test suite is turning into art.",
+      "\u{1F304} Beautiful landscape of tests. But we can still paint the corners.",
+      "\u{1F9ED} You know where you're headed. Don\u2019t get distracted.",
+      "\u{1F6E1}\uFE0F Solid protection. Add a helmet and you\u2019re golden.",
+      "\u{1F6A7} You\u2019re nearly out of the construction zone.",
+      "\u{1F3AE} The boss fight is ahead. You\u2019re nearly ready.",
+      "\u{1F579}\uFE0F You\u2019ve unlocked \u2018competent dev mode\u2019. Keep playing.",
+      "\u{1F9EA} Your experiments are producing reliable results.",
+      "\u{1F4E6} This package is nearly sealed. Just tape up the edges.",
+      "\u{1F4F6} Strong signal. Just a little interference left.",
+      "\u{1F4C8} Almost at greatness. Just a few more steps."
+    ]
+  },
+  {
+    min: 80,
+    max: 94,
+    sprites: ["80.png", "90.png"],
+    messages: [
+      "\u{1F389} Excellent coverage! Your code is well-protected and battle-tested.",
+      "\u2B50 Outstanding! You're setting a great example for test-driven development.",
+      "\u{1F3C6} High-quality coverage! Your code confidence level is through the roof!",
+      "\u{1F4BC} You could frame this test suite and show it to recruiters.",
+      "\u{1F4DC} These tests deserve to be read aloud in the town square.",
+      "\u{1F4C8} You're trending in the right direction. Strong and stable.",
+      "\u{1F9EA} A well-oiled testing machine.",
+      "\u{1F9E0} Sharp, thoughtful coverage. It shows.",
+      "\u{1F9F0} This toolset is nearly complete.",
+      "\u{1F9F5} Every function stitched together with care.",
+      "\u{1F3A4} Your test suite just dropped a mic.",
+      "\u{1F31F} That coverage star is burning bright.",
+      "\u{1FA84} Your testing spells are working wonders.",
+      "\u{1FA9C} You\u2019re on the second-to-last rung. Glory is near.",
+      "\u{1F3AF} Bullseye-level testing.",
+      "\u{1F4A5} The code is tested and it shows.",
+      "\u{1F320} Coverage dreams do come true.",
+      "\u{1F469}\u200D\u{1F680} Astronomical quality confirmed.",
+      "\u{1F9CA} Cool, calm, and carefully tested.",
+      "\u{1FAE1} Your tests salute you.",
+      "\u{1F4DA} Your code base is practically a textbook example."
+    ]
+  },
+  {
+    min: 95,
+    max: 100,
+    sprites: ["100.png"],
+    messages: [
+      "\u{1F947} LEGENDARY! Your code coverage is absolutely pristine!",
+      "\u{1F451} Coverage royalty! You've achieved testing nirvana.",
+      "\u{1F680} To infinity and beyond! Perfect coverage achieved, you testing wizard!",
+      "\u{1F9FC} So clean you could eat off this code.",
+      "\u{1F396}\uFE0F Medal-worthy test suite. Salute!",
+      "\u2728 Nothing escapes your tests. Nothing.",
+      "\u{1F6E1}\uFE0F Your coverage is titanium-plated.",
+      "\u{1F310} The whole system is under control. The matrix approves.",
+      "\u{1F9D9}\u200D\u2642\uFE0F You cast 100% coverage like a true mage.",
+      "\u{1F3A9} That\u2019s some real testing magic.",
+      "\u{1F9EC} Your test suite has DNA-level accuracy.",
+      "\u{1F3AE} You've reached the final level. Test boss defeated.",
+      "\u{1F4E6} Fully sealed, tamper-evident codebase.",
+      "\u{1F6F0}\uFE0F Your coverage scans the galaxy.",
+      "\u{1F9CA} Ice cold perfection.",
+      "\u{1F942} Here\u2019s to spotless execution.",
+      "\u{1F4BE} You\u2019ve saved the testing world.",
+      "\u{1F4E2} Loud and proud: 100% verified.",
+      "\u{1F9FC} Code squeaky clean. Mr. Clean is impressed.",
+      "\u{1F3C1} Flawless finish."
+    ]
+  }
+];
+function getCoverageFeedback(percentage, githubContext) {
+  const range = FEEDBACK_RANGES.find(
+    (r) => percentage >= r.min && percentage <= r.max
+  );
+  if (!range) {
+    return {
+      sprite: generateSpriteUrl("50.png", githubContext),
+      message: "\u{1F916} Coverage data processed! Keep up the good work!"
+    };
+  }
+  const randomSprite = range.sprites[Math.floor(Math.random() * range.sprites.length)];
+  const randomMessage = range.messages[Math.floor(Math.random() * range.messages.length)];
+  return {
+    sprite: generateSpriteUrl(randomSprite, githubContext),
+    message: randomMessage
+  };
 }
-function generateCoverageSprite(percentage, githubContext) {
-  const sprite = getCoverageSprite(percentage);
+function generateSpriteUrl(spriteFile, githubContext) {
   const owner = githubContext?.owner || "seuros";
   const repo = githubContext?.repo || "lcov-summary-action";
   const ref = githubContext?.ref || "master";
-  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${sprite}`;
-  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${spriteFile}`;
 }
+function generateCoverageSpriteWithFeedback(percentage, githubContext, includeFeedback = false) {
+  const feedback = getCoverageFeedback(percentage, githubContext);
+  const sprite = `<img src="${feedback.sprite}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
+  if (includeFeedback) {
+    return `${sprite}
+
+> ${feedback.message}`;
+  }
+  return sprite;
+}
+
+// src/summary.ts
 function generateSummary(covered, not_covered, options) {
   const primary = options?.primary_color || "#4CAF50";
   const secondary = options?.secondary_color || "#FF5733";
   const title = options?.title || "Project Coverage";
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(percentage, options?.github_context) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+    percentage,
+    options?.github_context,
+    options?.show_coverage_feedback
+  ) : "";
   return `## ${spriteHtml}\u{1F4CA} ${title}
 
 \`\`\`mermaid
@@ -24058,7 +24274,11 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSprite(result.percentage, options?.github_context) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+    result.percentage,
+    options?.github_context,
+    options?.show_coverage_feedback
+  ) : "";
   let summary2 = `## ${spriteHtml}\u{1F4CA} ${title}
 
 ### Overall Coverage
@@ -24229,6 +24449,7 @@ async function main() {
     generate_badge: inputs.generateBadge,
     badge_style: inputs.badgeStyle,
     show_coverage_sprite: inputs.showCoverageSprite,
+    show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -24239,6 +24460,7 @@ async function main() {
     primary_color: inputs.primary_color,
     secondary_color: inputs.secondary_color,
     show_coverage_sprite: inputs.showCoverageSprite,
+    show_coverage_feedback: inputs.showCoverageFeedback,
     github_context: {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -24455,7 +24677,8 @@ function getInputs() {
       }
       return style;
     })(),
-    showCoverageSprite: getInputBoolValue("show-coverage-sprite")
+    showCoverageSprite: getInputBoolValue("show-coverage-sprite"),
+    showCoverageFeedback: getInputBoolValue("show-coverage-feedback")
   };
 }
 function getInputFilePath(inputName, defaultValue) {

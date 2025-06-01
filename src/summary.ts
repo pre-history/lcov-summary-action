@@ -1,39 +1,8 @@
 import { ParseLcov, FileCoverage, CoverageDiff } from './lcov_parser';
-
-/**
- * Selects the appropriate sprite based on coverage percentage
- */
-function getCoverageSprite(percentage: number): string {
-  // Round to nearest 10% but handle special cases
-  if (percentage === 0) return '0.png';
-  if (percentage < 15) return '10.png';
-  if (percentage < 35) return '30.png';
-  if (percentage < 45) return '40.png';
-  if (percentage < 55) return '50.png';
-  if (percentage < 65) return '60.png';
-  if (percentage < 75) return '70.png';
-  if (percentage < 85) return '80.png';
-  if (percentage < 95) return '90.png';
-  return '100.png';
-}
-
-/**
- * Generates coverage sprite markdown
- */
-function generateCoverageSprite(
-  percentage: number,
-  githubContext?: { owner: string; repo: string; ref: string },
-): string {
-  const sprite = getCoverageSprite(percentage);
-
-  // Use current repo and branch context if available, fallback to master
-  const owner = githubContext?.owner || 'seuros';
-  const repo = githubContext?.repo || 'lcov-summary-action';
-  const ref = githubContext?.ref || 'master';
-
-  const spriteUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${sprite}`;
-  return `<img src="${spriteUrl}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
-}
+import {
+  generateCoverageSpriteWithFeedback,
+  getCoverageFeedbackMessage,
+} from './feedback';
 
 interface Options {
   title?: string;
@@ -45,6 +14,7 @@ interface Options {
   generate_badge?: boolean;
   badge_style?: string;
   show_coverage_sprite?: boolean;
+  show_coverage_feedback?: boolean;
   github_context?: { owner: string; repo: string; ref: string };
 }
 
@@ -60,7 +30,11 @@ export function generateSummary(
   const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSprite(percentage, options?.github_context)
+    ? generateCoverageSpriteWithFeedback(
+        percentage,
+        options?.github_context,
+        options?.show_coverage_feedback,
+      )
     : '';
 
   return `## ${spriteHtml}📊 ${title}
@@ -94,7 +68,11 @@ export function generateDetailedSummary(
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
   const spriteHtml = options?.show_coverage_sprite
-    ? generateCoverageSprite(result.percentage, options?.github_context)
+    ? generateCoverageSpriteWithFeedback(
+        result.percentage,
+        options?.github_context,
+        options?.show_coverage_feedback,
+      )
     : '';
 
   let summary = `## ${spriteHtml}📊 ${title}
