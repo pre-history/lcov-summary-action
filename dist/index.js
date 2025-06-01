@@ -24207,7 +24207,9 @@ var FEEDBACK_RANGES = [
   }
 ];
 function getCoverageFeedback(percentage, githubContext) {
-  const range = FEEDBACK_RANGES.find((r) => percentage >= r.min && percentage <= r.max);
+  const range = FEEDBACK_RANGES.find(
+    (r) => percentage >= r.min && percentage <= r.max
+  );
   if (!range) {
     return {
       sprite: generateSpriteUrl("50.png", githubContext),
@@ -24245,7 +24247,11 @@ function generateSummary(covered, not_covered, options) {
   const title = options?.title || "Project Coverage";
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round(covered / total * 100);
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(percentage, options?.github_context, options?.show_coverage_feedback) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+    percentage,
+    options?.github_context,
+    options?.show_coverage_feedback
+  ) : "";
   return `## ${spriteHtml}\u{1F4CA} ${title}
 
 \`\`\`mermaid
@@ -24268,7 +24274,11 @@ function generateDetailedSummary(result, diff, options) {
   const threshold = options?.coverage_threshold || 0;
   const thresholdStatus = result.percentage >= threshold ? "\u2705" : "\u274C";
   const thresholdText = threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : "";
-  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(result.percentage, options?.github_context, options?.show_coverage_feedback) : "";
+  const spriteHtml = options?.show_coverage_sprite ? generateCoverageSpriteWithFeedback(
+    result.percentage,
+    options?.github_context,
+    options?.show_coverage_feedback
+  ) : "";
   let summary2 = `## ${spriteHtml}\u{1F4CA} ${title}
 
 ### Overall Coverage
