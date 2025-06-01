@@ -20,6 +20,7 @@ title Project Coverage
 - Provides a clear and concise overview of code coverage changes.
 - Helps maintain high test coverage by making coverage changes visible in each PR.
 - Optional coverage sprite icons to visualize coverage levels (0%, 10%, 30%, 40%, 50%, 60%, 70%, 80%, 90%, 100%).
+- 147 unique randomized feedback messages that progress from roasting low coverage to celebrating high coverage.
 
 ## Usage
 
@@ -32,6 +33,7 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
     lcov-file: './coverage/lcov.info'
     comment-on-pr: true
     show-coverage-sprite: true
+    show-coverage-feedback: true
 ```
 
 ## Inputs
@@ -46,6 +48,7 @@ To use the LCOV Summary Action in your project, add the following to your GitHub
 | `pie-covered-color`     | Color for pie chart covered part                                      | No       | `#4CAF50`              |
 | `pie-not-covered-color` | Color for pie chart not covered part                                  | No       | `#FF5733`              |
 | `show-coverage-sprite`  | Show coverage sprite icon in PR comments                              | No       | `false`                |
+| `show-coverage-feedback` | Show randomized coverage feedback messages (147 unique roasts/encouragements) | No | `false` |
 
 ## Permissions
 
@@ -65,3 +68,19 @@ permissions:
 ```
 
 This ensures that the action has the necessary permissions to post the coverage summary as a comment on the pull request.
+
+## Coverage Feedback Messages
+
+When `show-coverage-feedback` is enabled, the action displays randomized feedback messages that adapt to your coverage level:
+
+### Coverage Ranges & Message Examples
+
+- **0% Coverage** (21 messages): Savage roasts like "💀 Your code coverage is deader than a doornail!" and "🔮 No tests, only vibes."
+- **1-19% Coverage** (21 messages): Critical but motivating feedback such as "🦗 Test results came back and it was just crickets."
+- **20-39% Coverage** (21 messages): Encouraging progress with messages like "🌱 A seedling of coverage. Needs more sunshine and effort."
+- **40-59% Coverage** (21 messages): Balanced feedback including "🌗 Half moon coverage. We want full moon energy."
+- **60-79% Coverage** (21 messages): Positive reinforcement like "🎨 Your test suite is turning into art."
+- **80-94% Coverage** (21 messages): High praise such as "🎤 Your test suite just dropped a mic."
+- **95-100% Coverage** (21 messages): Pure celebration including "🧼 Code squeaky clean. Mr. Clean is impressed."
+
+Each run randomly selects one message from the appropriate range, ensuring fresh and entertaining feedback every time!
