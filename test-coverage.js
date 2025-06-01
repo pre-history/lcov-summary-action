@@ -1,4 +1,6 @@
-// Import the compiled parser directly
+#!/usr/bin/env bun
+
+// Test our coverage parsing capabilities
 const fs = require('fs');
 
 // Simple LCOV parser for testing

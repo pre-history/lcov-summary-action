@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 // Set up GitHub Actions environment
 process.env.INPUT_LCOV_FILE = './coverage/lcov.info';
@@ -17,4 +17,6 @@ process.env.GITHUB_REF = 'refs/heads/main';
 process.env.GITHUB_REPOSITORY = 'pre-history/lcov-summary-action';
 
 // Import and run the action
-const main = require('./dist/index.js');
+require('./dist/index.js');
+
+console.log('🦕 LCovMan self-test completed! Check the action summary above.');
