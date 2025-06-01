@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+    
+    - name: Install dependencies
+      run: bun install
+    
+    - name: Run tests
+      run: bun test
+    
+    - name: Build project
+      run: bun run build
+    
+    - name: Verify dist is up to date
+      run: |
+        if [ -n "$(git status --porcelain dist/)" ]; then
+          echo "❌ dist/ directory is not up to date. Please run 'bun run build' and commit the changes."
+          git status --porcelain dist/
+          exit 1
+        else
+          echo "✅ dist/ directory is up to date"
+        fi

@@ -1,5 +1,9 @@
 # LCOV Summary Action
 
+[![CI](https://github.com/pre-history/lcov-summary-action/workflows/CI/badge.svg)](https://github.com/pre-history/lcov-summary-action/actions/workflows/ci.yml)
+[![Test Coverage](https://github.com/pre-history/lcov-summary-action/workflows/Test%20Coverage%20with%20LCovMan/badge.svg)](https://github.com/pre-history/lcov-summary-action/actions/workflows/test-coverage.yml)
+![Coverage](https://img.shields.io/badge/coverage-0%25-red?style=for-the-badge)
+
 This repository contains the code for the LCOV Summary Action, a GitHub Action that provides a summary of Line Coverage (LCOV) reports in your GitHub Pull Requests.
 
 ```mermaid
