@@ -48,11 +48,11 @@ export function generateSummary(
   const title = options?.title || 'Project Coverage';
   const total = covered + not_covered;
   const percentage = total === 0 ? 0 : Math.round((covered / total) * 100);
-  
-  const spriteHtml = options?.show_coverage_sprite 
+
+  const spriteHtml = options?.show_coverage_sprite
     ? generateCoverageSprite(percentage)
     : '';
-    
+
   return `## ${spriteHtml}📊 ${title}
 
 \`\`\`mermaid
@@ -83,7 +83,7 @@ export function generateDetailedSummary(
   const thresholdText =
     threshold > 0 ? ` | Threshold: ${thresholdStatus} ${threshold}%` : '';
 
-  const spriteHtml = options?.show_coverage_sprite 
+  const spriteHtml = options?.show_coverage_sprite
     ? generateCoverageSprite(result.percentage)
     : '';
 
@@ -216,12 +216,7 @@ title ${title}
     const badgeMarkdown = `![Coverage](${badgeUrl})`;
 
     summary += `### Coverage Badge 📊
-Copy this to your README.md:
-\`\`\`markdown
 ${badgeMarkdown}
-\`\`\`
-
-Preview: ${badgeMarkdown}
 
 `;
   }
