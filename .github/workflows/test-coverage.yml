@@ -40,7 +40,7 @@ jobs:
           generate-badge: true
           badge-style: 'for-the-badge'
           comment-on-pr: true
-          coverage-threshold: '0'  # 0% because our tests are unit tests, not integration tests
+          coverage-threshold: '0' # 0% because our tests are unit tests, not integration tests
           title: 'LCovMan Self-Test Coverage 🦕'
           working-directory: './'
 

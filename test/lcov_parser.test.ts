@@ -1,7 +1,12 @@
 import { describe, it } from 'node:test';
 import * as fs from 'node:fs';
 import assert from 'node:assert';
-import { parseLcov, compareLcov, type ParseLcov, type CoverageDiff } from '../src/lcov_parser';
+import {
+  parseLcov,
+  compareLcov,
+  type ParseLcov,
+  type CoverageDiff,
+} from '../src/lcov_parser';
 
 describe('coverage percentage', () => {
   it('should return the 0%', () => {
