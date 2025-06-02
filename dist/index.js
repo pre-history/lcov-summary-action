@@ -24206,31 +24206,31 @@ var FEEDBACK_RANGES = [
     ]
   }
 ];
-function getCoverageFeedback(percentage, githubContext) {
+function getCoverageFeedback(percentage) {
   const range = FEEDBACK_RANGES.find(
     (r) => percentage >= r.min && percentage <= r.max
   );
   if (!range) {
     return {
-      sprite: generateSpriteUrl("50.png", githubContext),
+      sprite: generateSpriteUrl("50.png"),
       message: "\u{1F916} Coverage data processed! Keep up the good work!"
     };
   }
   const randomSprite = range.sprites[Math.floor(Math.random() * range.sprites.length)];
   const randomMessage = range.messages[Math.floor(Math.random() * range.messages.length)];
   return {
-    sprite: generateSpriteUrl(randomSprite, githubContext),
+    sprite: generateSpriteUrl(randomSprite),
     message: randomMessage
   };
 }
-function generateSpriteUrl(spriteFile, githubContext) {
-  const owner = githubContext?.owner || "seuros";
-  const repo = githubContext?.repo || "lcov-summary-action";
-  const ref = githubContext?.ref || "master";
+function generateSpriteUrl(spriteFile) {
+  const owner = "pre-history";
+  const repo = "lcov-summary-action";
+  const ref = "master";
   return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${spriteFile}`;
 }
 function generateCoverageSpriteWithFeedback(percentage, githubContext, includeFeedback = false) {
-  const feedback = getCoverageFeedback(percentage, githubContext);
+  const feedback = getCoverageFeedback(percentage);
   const sprite = `<img src="${feedback.sprite}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
   if (includeFeedback) {
     return `${sprite}

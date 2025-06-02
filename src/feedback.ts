@@ -210,7 +210,6 @@ const FEEDBACK_RANGES = [
 
 export function getCoverageFeedback(
   percentage: number,
-  githubContext?: { owner: string; repo: string; ref: string },
 ): CoverageFeedback {
   // Find the appropriate range
   const range = FEEDBACK_RANGES.find(
@@ -220,7 +219,7 @@ export function getCoverageFeedback(
   if (!range) {
     // Fallback for unexpected values
     return {
-      sprite: generateSpriteUrl('50.png', githubContext),
+      sprite: generateSpriteUrl('50.png'),
       message: '🤖 Coverage data processed! Keep up the good work!',
     };
   }
@@ -232,18 +231,16 @@ export function getCoverageFeedback(
     range.messages[Math.floor(Math.random() * range.messages.length)];
 
   return {
-    sprite: generateSpriteUrl(randomSprite, githubContext),
+    sprite: generateSpriteUrl(randomSprite),
     message: randomMessage,
   };
 }
 
-function generateSpriteUrl(
-  spriteFile: string,
-  githubContext?: { owner: string; repo: string; ref: string },
-): string {
-  const owner = githubContext?.owner || 'seuros';
-  const repo = githubContext?.repo || 'lcov-summary-action';
-  const ref = githubContext?.ref || 'master';
+function generateSpriteUrl(spriteFile: string): string {
+  // Sprites should always come from the action's repository, not the user's repo
+  const owner = 'pre-history';
+  const repo = 'lcov-summary-action';
+  const ref = 'master';
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/${ref}/sprites/${spriteFile}`;
 }
@@ -253,7 +250,7 @@ export function generateCoverageSpriteWithFeedback(
   githubContext?: { owner: string; repo: string; ref: string },
   includeFeedback: boolean = false,
 ): string {
-  const feedback = getCoverageFeedback(percentage, githubContext);
+  const feedback = getCoverageFeedback(percentage);
   const sprite = `<img src="${feedback.sprite}" alt="Coverage ${percentage}%" width="48" height="48" style="vertical-align: middle; margin-right: 8px;" />`;
 
   if (includeFeedback) {
@@ -267,6 +264,6 @@ export function getCoverageFeedbackMessage(
   percentage: number,
   githubContext?: { owner: string; repo: string; ref: string },
 ): string {
-  const feedback = getCoverageFeedback(percentage, githubContext);
+  const feedback = getCoverageFeedback(percentage);
   return feedback.message;
 }
