@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.6.0...lcov-summary-action-v0.6.1) (2025-06-02)
+
+
+### Bug Fixes
+
+* update sprite location ([33733ba](https://github.com/pre-history/lcov-summary-action/commit/33733bac04203cc73d0798eea783ac98b2545592))
+
 ## [0.6.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.5.0...lcov-summary-action-v0.6.0) (2025-06-01)
 
 
