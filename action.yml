@@ -19,6 +19,7 @@ inputs:
   comment-on-pr:
     description: Add Diagram comment to the current PR
     required: false
+    default: 'false'
   working-directory:
     description: Set working directory if project is not in root folder
     required: false
