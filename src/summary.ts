@@ -17,6 +17,26 @@ interface Options {
   github_context?: { owner: string; repo: string; ref: string };
 }
 
+/**
+ * Generates a coverage badge URL and markdown.
+ */
+export function generateCoverageBadge(
+  percentage: number,
+  style: string = 'flat',
+): { url: string; markdown: string } {
+  // Determine color based on coverage percentage
+  let color = 'red';
+  if (percentage >= 80) color = 'brightgreen';
+  else if (percentage >= 60) color = 'yellow';
+  else if (percentage >= 40) color = 'orange';
+
+  const percentageText = `${percentage}%25`; // URL encode the % symbol
+  const url = `https://img.shields.io/badge/coverage-${percentageText}-${color}?style=${style}`;
+  const markdown = `![Coverage](${url})`;
+
+  return { url, markdown };
+}
+
 export function generateSummary(
   covered: number,
   not_covered: number,
@@ -192,18 +212,13 @@ title ${title}
 
   // Add badge if requested
   if (options?.generate_badge) {
-    const badgeStyle = options?.badge_style || 'flat';
-    let badgeColor = 'red';
-    if (result.percentage >= 80) badgeColor = 'brightgreen';
-    else if (result.percentage >= 60) badgeColor = 'yellow';
-    else if (result.percentage >= 40) badgeColor = 'orange';
-
-    const percentageText = `${result.percentage}%25`;
-    const badgeUrl = `https://img.shields.io/badge/coverage-${percentageText}-${badgeColor}?style=${badgeStyle}`;
-    const badgeMarkdown = `![Coverage](${badgeUrl})`;
+    const badge = generateCoverageBadge(
+      result.percentage,
+      options?.badge_style || 'flat',
+    );
 
     summary += `### Coverage Badge 📊
-${badgeMarkdown}
+${badge.markdown}
 
 `;
   }

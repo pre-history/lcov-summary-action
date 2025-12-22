@@ -5,5 +5,5 @@ export default build({
   bundle: true,
   platform: 'node',
   outfile: 'dist/index.js',
-  target: 'node20',
+  target: 'node24',
 });

@@ -3,7 +3,11 @@ import * as github from '@actions/github';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseLcov, compareLcov } from './lcov_parser';
-import { generateSummary, generateDetailedSummary } from './summary';
+import {
+  generateSummary,
+  generateDetailedSummary,
+  generateCoverageBadge,
+} from './summary';
 /**
  * Represents the working directory.
  *
@@ -273,26 +277,6 @@ function isValidBadgeStyle(style: string): boolean {
   return validStyles.includes(style);
 }
 
-/**
- * Generates a coverage badge URL and markdown.
- */
-function generateCoverageBadge(
-  percentage: number,
-  style: string = 'flat',
-): { url: string; markdown: string } {
-  // Determine color based on coverage percentage
-  let color = 'red';
-  if (percentage >= 80) color = 'brightgreen';
-  else if (percentage >= 60) color = 'yellow';
-  else if (percentage >= 40) color = 'orange';
-
-  const percentageText = `${percentage}%25`; // URL encode the % symbol
-  const url = `https://img.shields.io/badge/coverage-${percentageText}-${color}?style=${style}`;
-  const markdown = `![Coverage](${url})`;
-
-  return { url, markdown };
-}
-
 export function getInputs(): {
   githubToken: string;
   workingDir: string;
@@ -344,14 +328,14 @@ export function getInputs(): {
   }
 
   const thresholdInput = getInputValue('coverage-threshold');
-  const coverageThreshold = thresholdInput ? parseFloat(thresholdInput) : 70;
+  const coverageThreshold = thresholdInput ? parseFloat(thresholdInput) : 0;
   if (
     isNaN(coverageThreshold) ||
     coverageThreshold < 0 ||
     coverageThreshold > 100
   ) {
     core.warning(
-      `Invalid coverage-threshold '${thresholdInput}', using default 70`,
+      `Invalid coverage-threshold '${thresholdInput}', using default 0`,
     );
   }
 
@@ -375,7 +359,7 @@ export function getInputs(): {
       coverageThreshold >= 0 &&
       coverageThreshold <= 100
         ? coverageThreshold
-        : 70,
+        : 0,
     failOnDecrease: getInputBoolValue('fail-on-coverage-decrease'),
     generateBadge: getInputBoolValue('generate-badge'),
     badgeStyle: (() => {
