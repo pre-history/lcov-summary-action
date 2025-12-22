@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.6.1...lcov-summary-action-v0.7.0) (2025-12-22)
+
+
+### Features
+
+* upgrade to Node.js 24, fix coverage threshold defaults, modernize TypeScript target to ES2022, and consolidate badge generation logic ([40c3980](https://github.com/pre-history/lcov-summary-action/commit/40c3980f5b185b14aae811b0c2a5de605d50078f))
+
 ## [0.6.1](https://github.com/pre-history/lcov-summary-action/compare/lcov-summary-action-v0.6.0...lcov-summary-action-v0.6.1) (2025-06-02)
 
 
